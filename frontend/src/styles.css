@@ -1,0 +1,114 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container-fluid {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.navbar, footer {
+    flex-shrink: 0;
+}
+
+.dashboard-grid {
+    display: grid;
+    gap: 1rem; /* Расстояние между элементами */
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); /* Адаптивные колонки */
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Одна колонка на маленьком экране */
+    }
+}
+
+.row.g-3.align-items-center {
+    margin-bottom: 1rem;
+}
+
+.col-auto {
+    flex: 0 0 auto;
+}
+
+/*.form-select,*/
+/*.form-control {*/
+/*    width: auto;*/
+/*}*/
+
+.visually-hidden {
+    display: none;
+}
+
+
+.input-group-text {
+    white-space: nowrap; /* Запрещаем перенос текста */
+    font-size: 0.875rem; /* Уменьшаем размер шрифта */
+}
+
+/* styles.css */
+
+.input-group-text {
+    white-space: nowrap; /* Запрещаем перенос текста */
+    font-size: 0.875rem; /* Уменьшаем размер шрифта */
+}
+
+/*.form-select,*/
+/*.form-control {*/
+/*    width: auto; !* Автоматическая ширина для компактности *!*/
+/*}*/
+
+.row.g-3.align-items-center {
+    margin-bottom: 1rem;
+}
+
+.col-auto.d-flex.align-items-center {
+    margin-top: 0; /* Убираем лишний margin-top */
+}
+
+.visually-hidden {
+    display: none;
+}
+
+.row.g-3 > div {
+    flex: 1 1 auto; /* Равномерное распределение колонок */
+}
+
+.input-group-text {
+    white-space: nowrap; /* Запрещаем перенос текста */
+    font-size: 0.875rem; /* Уменьшаем размер шрифта */
+}
+
+/*.form-select,*/
+/*.form-control {*/
+/*    width: auto; !* Автоматическая ширина для компактности *!*/
+/*}*/
+
+.row.g-3.align-items-center {
+    margin-bottom: 1rem;
+}
+
+.text-end {
+    text-align: right; /* Выравнивание кнопки по правому краю */
+}
+
+.row.g-3 > div {
+    flex: 1 1 auto; /* Равномерное распределение колонок */
+}
+
+.row.g-3 + .row.g-3 {
+    margin-top: 1rem; /* Уменьшаем отступ между строками */
+}
+
+.visually-hidden {
+    display: none;
+}
