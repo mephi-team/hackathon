@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
+
     @GetMapping("/transactions")
     public ResponseEntity<String> getTransactions() {
         logger.info("Test log record");
