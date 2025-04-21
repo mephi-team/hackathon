@@ -5,6 +5,11 @@
 docker compose up
 ```
 
+Запуск только БД:
+```bash
+docker compose up db
+```
+
 Проверка работы интерфейса: [ссылка](http://localhost:3000)
 
 Пользователь: admin/admin123
