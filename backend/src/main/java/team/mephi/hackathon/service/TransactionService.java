@@ -38,4 +38,11 @@ public class TransactionService {
 
         return transactionRepository.save(transaction);
     }
+    public void deleteTransaction(UUID id) {
+        Optional<Transaction> transaction = transactionRepository.findById(id);
+        if (transaction.isEmpty() || transaction.get().isDeleted()) {
+            throw new TransactionNotFoundException("Transaction with ID " + id + " not found");
+        }
+        transactionRepository.deleteById(id);
+    }
 }

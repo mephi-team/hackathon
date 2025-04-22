@@ -9,4 +9,5 @@ public class Transaction {
     private double amount;
     private String currency;
     private String description;
+    private boolean deleted = false; // Новое поле для статуса
 }

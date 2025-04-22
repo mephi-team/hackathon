@@ -7,6 +7,7 @@ import java.util.UUID;
 public interface TransactionRepository {
     Transaction save(Transaction transaction);
     Optional<Transaction> findById(UUID id);
+    void deleteById(UUID id); // Новый метод
 }
 
 // InMemoryTransactionRepository.java
@@ -32,5 +33,14 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     @Override
     public Optional<Transaction> findById(UUID id) {
         return Optional.ofNullable(storage.get(id));
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        Optional<Transaction> transaction = findById(id);
+        transaction.ifPresent(t -> {
+            t.setDeleted(true); // Мягкое удаление
+            save(t);
+        });
     }
 }
