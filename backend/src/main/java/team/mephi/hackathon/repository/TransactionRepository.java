@@ -1,17 +1,19 @@
 package team.mephi.hackathon.repository;
 
 import team.mephi.hackathon.model.Transaction;
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface TransactionRepository {
     Transaction save(Transaction transaction);
+    Optional<Transaction> findById(UUID id);
 }
 
 // InMemoryTransactionRepository.java
 package team.mephi.hackathon.repository;
 
-import team.mephi.hackathon.model.Transaction;
 import org.springframework.stereotype.Repository;
+import team.mephi.hackathon.model.Transaction;
 import java.util.*;
 
 @Repository
@@ -25,5 +27,10 @@ public class InMemoryTransactionRepository implements TransactionRepository {
         }
         storage.put(transaction.getId(), transaction);
         return transaction;
+    }
+
+    @Override
+    public Optional<Transaction> findById(UUID id) {
+        return Optional.ofNullable(storage.get(id));
     }
 }
