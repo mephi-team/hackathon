@@ -1,9 +1,11 @@
-package team.mephi.hackathon.dto;
+package team.mephi.hackathon.model;
 
 import lombok.Data;
+import java.util.UUID;
 
 @Data
-public class TransactionDto {
+public class Transaction {
+    private UUID id;
     private double amount;
     private String currency;
     private String description;
