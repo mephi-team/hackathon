@@ -6,7 +6,8 @@ import team.mephi.hackathon.dto.TransactionDto;
 import team.mephi.hackathon.exceptions.TransactionNotFoundException;
 import team.mephi.hackathon.model.Transaction;
 import team.mephi.hackathon.repository.TransactionRepository;
-
+import team.mephi.hackathon.entity.Transaction;
+import team.mephi.hackathon.dto.TransactionDto;
 import java.util.List;
 import java.util.UUID;
 

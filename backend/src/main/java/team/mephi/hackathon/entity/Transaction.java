@@ -1,6 +1,7 @@
-package team.mephi.hackathon.model;
+package team.mephi.hackathon.entity;
 
 import lombok.Data;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
@@ -11,21 +12,16 @@ public class Transaction {
     @GeneratedValue
     @Column(columnDefinition = "UUID")
     private UUID id;
+
     @Column(nullable = false)
     private double amount;
+
     @Column(nullable = false, length = 3)
     private String currency;
+
     @Column(length = 255)
     private String description;
+
     @Column(nullable = false)
     private boolean deleted = false;
-    private UUID id;
-    private double amount;
-    private String currency;
-    private String description;
-    private boolean deleted = false; // Новое поле для статуса
-    // Добавим геттер для deleted (необходим для PDFBox)
-    public boolean isDeleted() {
-        return deleted;
-    }
 }

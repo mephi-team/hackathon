@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import team.mephi.hackathon.model.Transaction;
 import java.util.List;
 import java.util.UUID;
+import team.mephi.hackathon.entity.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 

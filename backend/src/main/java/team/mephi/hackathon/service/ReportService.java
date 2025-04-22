@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import team.mephi.hackathon.exceptions.NoTransactionsFoundException;
 import team.mephi.hackathon.model.Transaction;
+import team.mephi.hackathon.entity.Transaction;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

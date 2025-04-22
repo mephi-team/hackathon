@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import team.mephi.hackathon.dto.TransactionDto;
 import team.mephi.hackathon.model.Transaction;
 import team.mephi.hackathon.service.TransactionService;
+import team.mephi.hackathon.entity.Transaction;
+import team.mephi.hackathon.dto.TransactionDto;
 
 import java.util.Collections;
 import java.util.UUID;

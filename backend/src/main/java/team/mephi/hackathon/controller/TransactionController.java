@@ -9,11 +9,13 @@ import team.mephi.hackathon.dto.TransactionDto;
 import team.mephi.hackathon.exceptions.TransactionNotFoundException;
 import team.mephi.hackathon.model.Transaction;
 import team.mephi.hackathon.service.TransactionService;
+import team.mephi.hackathon.entity.Transaction;
+import team.mephi.hackathon.dto.TransactionDto;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
@@ -40,6 +42,11 @@ public class TransactionController {
         logger.info("Deleting transaction with ID: {}", id);
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping
+    public Transaction create(@RequestBody TransactionDto dto) {
+        return service.createTransaction(dto);
     }
 
 }
