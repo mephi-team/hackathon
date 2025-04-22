@@ -10,4 +10,8 @@ public class Transaction {
     private String currency;
     private String description;
     private boolean deleted = false; // Новое поле для статуса
+    // Добавим геттер для deleted (необходим для PDFBox)
+    public boolean isDeleted() {
+        return deleted;
+    }
 }

@@ -9,11 +9,18 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(TransactionNotFoundException.class)
+    @ExceptionHandler(NoTransactionsFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleTransactionNotFound(TransactionNotFoundException ex) {
+    public Map<String, String> handleNoTransactionsFound(NoTransactionsFoundException ex) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", ex.getMessage());
+        return errorResponse;
+    }
+    @ExceptionHandler(IOException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleIOException(IOException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Error generating report: " + ex.getMessage());
         return errorResponse;
     }
 }

@@ -7,7 +7,8 @@ import java.util.UUID;
 public interface TransactionRepository {
     Transaction save(Transaction transaction);
     Optional<Transaction> findById(UUID id);
-    void deleteById(UUID id); // Новый метод
+    void deleteById(UUID id);
+    List<Transaction> findAllActive();
 }
 
 // InMemoryTransactionRepository.java
@@ -42,5 +43,11 @@ public class InMemoryTransactionRepository implements TransactionRepository {
             t.setDeleted(true); // Мягкое удаление
             save(t);
         });
+    }
+    @Override
+    public List<Transaction> findAllActive() {
+        return storage.values().stream()
+                .filter(transaction -> !transaction.isDeleted())
+                .collect(Collectors.toList());
     }
 }
