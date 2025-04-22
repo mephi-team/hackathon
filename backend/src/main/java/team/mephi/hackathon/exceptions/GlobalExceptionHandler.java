@@ -23,4 +23,12 @@ public class GlobalExceptionHandler {
         errorResponse.put("error", "Error generating report: " + ex.getMessage());
         return errorResponse;
     }
+    @ExceptionHandler(DataAccessException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleDataAccessException(DataAccessException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Database error: " + ex.getMessage());
+        return errorResponse;
+    }
+
 }
