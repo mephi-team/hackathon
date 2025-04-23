@@ -18,5 +18,18 @@ spring:
     init:
       mode: always
       schema-locations: classpath:init.sql
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWK_SET_URI:http://localhost:8080/realms/hackathon-realm/protocol/openid-connect/certs}
 server:
   port: 8080
+app:
+  role:
+    users: ${APP_ROLE_USERS:user}
+  http:
+    cors:
+      headers: ${APP_HTTP_CORS_HEADERS:authorization}
+      methods: ${APP_HTTP_CORS_METHODS:GET}
+      origins: ${APP_HTTP_CORS_ORIGINS:*}
