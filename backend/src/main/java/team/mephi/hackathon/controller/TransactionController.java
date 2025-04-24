@@ -1,63 +1,50 @@
 package team.mephi.hackathon.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import team.mephi.hackathon.dto.TransactionDto;
+import team.mephi.hackathon.dto.TransactionFilterDto;
+import team.mephi.hackathon.dto.TransactionRequestDto;
 import team.mephi.hackathon.dto.TransactionResponseDto;
-import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.service.TransactionService;
 
-
+import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private final TransactionService transactionService;
+    private final TransactionService service;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TransactionResponseDto createTransaction(@RequestBody TransactionDto transactionDto) {
-        Transaction transaction = transactionService.createTransaction(transactionDto);
-        return convertToResponseDto(transaction);
+    public TransactionResponseDto create(@Valid @RequestBody TransactionRequestDto dto) {
+        return service.createTransaction(dto);
     }
 
     @GetMapping("/{id}")
-    public TransactionResponseDto getTransaction(@PathVariable UUID id) {
-        Transaction transaction = transactionService.getTransactionById(id);
-        return convertToResponseDto(transaction);
+    public TransactionResponseDto getById(@PathVariable Long id) {
+        return service.getTransaction(id);
     }
 
     @GetMapping
-    public List<TransactionResponseDto> getAllTransactions() {
-        return transactionService.getAllTransactions().stream()
-                .map(this::convertToResponseDto)
-                .collect(Collectors.toList());
+    public List<TransactionResponseDto> search(@Valid TransactionFilterDto filter) {
+        return service.searchTransactions(filter);
     }
 
     @PutMapping("/{id}")
-    public TransactionResponseDto updateTransaction(
-            @PathVariable UUID id,
-            @RequestBody TransactionDto transactionDto
+    public TransactionResponseDto update(
+            @PathVariable Long id,
+            @Valid @RequestBody TransactionRequestDto dto
     ) {
-        Transaction transaction = transactionService.updateTransaction(id, transactionDto);
-        return convertToResponseDto(transaction);
+        return service.updateTransaction(id, dto);
     }
 
-    private TransactionResponseDto convertToResponseDto(Transaction transaction) {
-        TransactionResponseDto dto = new TransactionResponseDto();
-        dto.setId(transaction.getId());
-        dto.setAmount(transaction.getAmount());
-        dto.setCurrency(transaction.getCurrency());
-        dto.setDescription(transaction.getDescription());
-        dto.setCreatedAt(transaction.getCreatedAt());
-        return dto;
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.deleteTransaction(id);
     }
 }

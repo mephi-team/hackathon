@@ -1,36 +1,60 @@
 package team.mephi.hackathon.entity;
 
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "transactions")
 public class Transaction {
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "UUID")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PersonType personType;
 
     @Column(nullable = false)
-    private double amount;
+    private LocalDateTime operationDate;
 
-    @Column(nullable = false, length = 3)
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionType transactionType;
 
-    @Column(length = 255)
-    private String description;
+    @Column(length = 500)
+    private String comment;
+
+    @Column(nullable = false, precision = 20, scale = 5)
+    private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionStatus status;
+
+    @Column(nullable = false)
+    private String senderBank;
+
+    @Column(nullable = false)
+    private String account;
+
+    @Column(nullable = false)
+    private String receiverBank;
+
+    @Column(length = 12)
+    private String receiverInn;
+
+    @Column(nullable = false)
+    private String receiverAccount;
+
+    @Column(nullable = false)
+    private String category;
+
+    @Column(length = 20)
+    private String receiverPhone;
 
     @Column(nullable = false)
     private boolean deleted = false;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
 }
