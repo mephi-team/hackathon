@@ -6,47 +6,58 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.mephi.hackathon.dto.TransactionDto;
-import team.mephi.hackathon.exceptions.TransactionNotFoundException;
-import team.mephi.hackathon.model.Transaction;
-import team.mephi.hackathon.service.TransactionService;
+import team.mephi.hackathon.dto.TransactionResponseDto;
 import team.mephi.hackathon.entity.Transaction;
-import team.mephi.hackathon.dto.TransactionDto;
+import team.mephi.hackathon.service.TransactionService;
 
+
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
-    private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
+
     private final TransactionService transactionService;
 
-    @GetMapping("/transactions")
-    public ResponseEntity<String> getTransactions() {
-        logger.info("Test log record");
-        return ResponseEntity.ok().body("ok");
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TransactionResponseDto createTransaction(@RequestBody TransactionDto transactionDto) {
+        Transaction transaction = transactionService.createTransaction(transactionDto);
+        return convertToResponseDto(transaction);
     }
 
-    @PutMapping("/transactions/{id}")
-    public ResponseEntity<Transaction> updateTransaction(
+    @GetMapping("/{id}")
+    public TransactionResponseDto getTransaction(@PathVariable UUID id) {
+        Transaction transaction = transactionService.getTransactionById(id);
+        return convertToResponseDto(transaction);
+    }
+
+    @GetMapping
+    public List<TransactionResponseDto> getAllTransactions() {
+        return transactionService.getAllTransactions().stream()
+                .map(this::convertToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @PutMapping("/{id}")
+    public TransactionResponseDto updateTransaction(
             @PathVariable UUID id,
             @RequestBody TransactionDto transactionDto
     ) {
-        logger.info("Updating transaction with ID: {}", id);
-        Transaction updatedTransaction = transactionService.updateTransaction(id, transactionDto);
-        return ResponseEntity.ok(updatedTransaction);
+        Transaction transaction = transactionService.updateTransaction(id, transactionDto);
+        return convertToResponseDto(transaction);
     }
 
-    @DeleteMapping("/transactions/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable UUID id) {
-        logger.info("Deleting transaction with ID: {}", id);
-        transactionService.deleteTransaction(id);
-        return ResponseEntity.noContent().build();
+    private TransactionResponseDto convertToResponseDto(Transaction transaction) {
+        TransactionResponseDto dto = new TransactionResponseDto();
+        dto.setId(transaction.getId());
+        dto.setAmount(transaction.getAmount());
+        dto.setCurrency(transaction.getCurrency());
+        dto.setDescription(transaction.getDescription());
+        dto.setCreatedAt(transaction.getCreatedAt());
+        return dto;
     }
-
-    @PostMapping
-    public Transaction create(@RequestBody TransactionDto dto) {
-        return service.createTransaction(dto);
-    }
-
 }
