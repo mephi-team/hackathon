@@ -1,6 +1,7 @@
 package team.mephi.hackathon.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import team.mephi.hackathon.dto.*;
 import team.mephi.hackathon.entity.Transaction;
@@ -17,6 +18,10 @@ public class TransactionService {
 
     private final TransactionRepository repository;
     private final ValidationService validationService;
+
+    public List<Transaction> getTransactions(Specification<Transaction> specification) {
+        return repository.findAll(specification);
+    }
 
     @Transactional
     public TransactionResponseDto createTransaction(TransactionRequestDto dto) {

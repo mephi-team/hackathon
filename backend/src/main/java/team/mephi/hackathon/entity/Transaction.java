@@ -1,7 +1,7 @@
 package team.mephi.hackathon.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -12,6 +12,9 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "entity_type", nullable = false)
+    private String entityType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

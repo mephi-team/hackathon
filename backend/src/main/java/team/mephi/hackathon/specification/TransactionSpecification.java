@@ -1,6 +1,6 @@
-package com.mephi.hackathon.specification;
+package team.mephi.hackathon.specification;
 
-import com.mephi.hackathon.entity.Transaction;
+import team.mephi.hackathon.entity.Transaction;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
