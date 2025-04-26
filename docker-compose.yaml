@@ -1,6 +1,34 @@
 version: '3.8'
 
 services:
+  keycloak_db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: keycloak_user
+      POSTGRES_PASSWORD: keycloak_password
+    volumes:
+      - ./keycloak-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_db:5432/keycloak_db
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_PASSWORD: keycloak_password
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    ports:
+      - "8080:8080"
+    depends_on:
+      - keycloak_db
   db:
     image: postgres
     restart: always
@@ -25,6 +53,11 @@ services:
       PG_HOST: db
       PG_USER: your_username
       PG_PASSWORD: your_password
+      APP_ROLE_USERS: user
+      APP_HTTP_CORS_HEADERS: authorization
+      APP_HTTP_CORS_METHODS: GET
+      APP_HTTP_CORS_ORIGINS: http://localhost:3000
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWK_SET_URI: http://keycloak:8080/realms/hackathon-realm/protocol/openid-connect/certs
     ports:
       - "8000:8000"
     depends_on:
