@@ -1,5 +1,6 @@
 package team.mephi.hackathon.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,12 +10,11 @@ import team.mephi.hackathon.dto.TransactionFilterDto;
 import team.mephi.hackathon.dto.TransactionRequestDto;
 import team.mephi.hackathon.dto.TransactionResponseDto;
 import team.mephi.hackathon.entity.Transaction;
-import team.mephi.hackathon.service.TransactionService;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -50,7 +50,7 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public TransactionResponseDto getById(@PathVariable Long id) {
+    public TransactionResponseDto getById(@PathVariable UUID id) {
         return service.getTransaction(id);
     }
 
@@ -61,7 +61,7 @@ public class TransactionController {
 
     @PutMapping("/{id}")
     public TransactionResponseDto update(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody TransactionRequestDto dto
     ) {
         return service.updateTransaction(id, dto);
@@ -69,7 +69,7 @@ public class TransactionController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         service.deleteTransaction(id);
     }
 }

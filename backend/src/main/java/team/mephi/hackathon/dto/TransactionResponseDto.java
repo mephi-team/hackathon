@@ -3,10 +3,11 @@ package team.mephi.hackathon.dto;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class TransactionResponseDto {
-    private Long id;
+    private UUID id;
     private String personType;
     private LocalDateTime operationDate;
     private String transactionType;

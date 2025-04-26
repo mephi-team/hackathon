@@ -1,8 +1,9 @@
 package team.mephi.hackathon.dto;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
-import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 public class TransactionRequestDto {

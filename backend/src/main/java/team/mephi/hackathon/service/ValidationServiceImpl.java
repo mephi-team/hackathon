@@ -1,11 +1,12 @@
 package team.mephi.hackathon.service;
 
 import org.springframework.stereotype.Service;
+import team.mephi.hackathon.controller.ValidationService;
 import team.mephi.hackathon.dto.TransactionRequestDto;
-import team.mephi.hackathon.exception.ValidationException;
+import team.mephi.hackathon.exceptions.ValidationException;
 
 @Service
-public class ValidationService {
+public class ValidationServiceImpl implements ValidationService {
 
     public void validateTransaction(TransactionRequestDto dto) {
         validateInn(dto.getReceiverInn());

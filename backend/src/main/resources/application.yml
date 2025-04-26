@@ -14,6 +14,7 @@ spring:
       hibernate:
         boot.allow_jdbc_metadata_access: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
   sql:
     init:
       mode: always
@@ -25,6 +26,9 @@ spring:
           jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWK_SET_URI:http://localhost:8080/realms/hackathon-realm/protocol/openid-connect/certs}
 server:
   port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
 app:
   role:
     users: ${APP_ROLE_USERS:user}
@@ -33,3 +37,13 @@ app:
       headers: ${APP_HTTP_CORS_HEADERS:authorization}
       methods: ${APP_HTTP_CORS_METHODS:GET}
       origins: ${APP_HTTP_CORS_ORIGINS:*}
+
+  logging:
+    level:
+      org:
+        hibernate:
+          SQL: DEBUG
+          type:
+            descriptor:
+              sql:
+                BasicBinder=TRACE:

@@ -7,7 +7,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
-import team.mephi.hackathon.exceptions.NoTransactionsFoundException;
+import team.mephi.hackathon.controller.ReportService;
 import team.mephi.hackathon.entity.Transaction;
 
 import java.io.ByteArrayOutputStream;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
-public class ReportService {
+public class ReportServiceImpl implements ReportService {
 
     public byte[] generatePdfReport(List<Transaction> transactions) throws IOException {
         try (PDDocument document = new PDDocument()) {
@@ -32,9 +32,8 @@ public class ReportService {
                 contentStream.setFont(PDType1Font.HELVETICA, 10);
                 float y = 650;
                 for (Transaction transaction : transactions) {
-                    String line = String.format("ID: %s | Amount: %.2f %s | Description: %s",
-                            transaction.getId(), transaction.getAmount(),
-                            transaction.getCurrency(), transaction.getDescription());
+                    String line = String.format("ID: %s | Amount: %.2f | Description: %s",
+                            transaction.getId().toString(), transaction.getAmount(), transaction.getComment());
                     contentStream.beginText();
                     contentStream.newLineAtOffset(50, y);
                     contentStream.showText(line);
@@ -66,9 +65,9 @@ public class ReportService {
             for (Transaction transaction : transactions) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(transaction.getId().toString());
-                row.createCell(1).setCellValue(transaction.getAmount());
-                row.createCell(2).setCellValue(transaction.getCurrency());
-                row.createCell(3).setCellValue(transaction.getDescription());
+                row.createCell(1).setCellValue(transaction.getAmount().toString());
+//                row.createCell(2).setCellValue(transaction.getCurrency());
+                row.createCell(2).setCellValue(transaction.getComment());
             }
 
             // Авто-размер колонок

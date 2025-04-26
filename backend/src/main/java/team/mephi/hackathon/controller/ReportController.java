@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.exceptions.NoTransactionsFoundException;
 import team.mephi.hackathon.repository.TransactionRepository;
-import team.mephi.hackathon.service.ReportService;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
 public class ReportController {
-
     private final TransactionRepository transactionRepository;
     private final ReportService reportService;
 

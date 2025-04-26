@@ -3,19 +3,23 @@ package team.mephi.hackathon.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import team.mephi.hackathon.controller.TransactionService;
+import team.mephi.hackathon.controller.ValidationService;
 import team.mephi.hackathon.dto.*;
+import team.mephi.hackathon.entity.PersonType;
 import team.mephi.hackathon.entity.Transaction;
-import team.mephi.hackathon.exception.TransactionNotFoundException;
+import team.mephi.hackathon.entity.TransactionStatus;
+import team.mephi.hackathon.entity.TransactionType;
+import team.mephi.hackathon.exceptions.TransactionNotFoundException;
 import team.mephi.hackathon.repository.TransactionRepository;
 
-import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionService {
-
+public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository repository;
     private final ValidationService validationService;
 
@@ -23,28 +27,27 @@ public class TransactionService {
         return repository.findAll(specification);
     }
 
-    @Transactional
     public TransactionResponseDto createTransaction(TransactionRequestDto dto) {
         validationService.validateTransaction(dto);
         Transaction entity = mapToEntity(dto);
         return mapToDto(repository.save(entity));
     }
 
-    public TransactionResponseDto getTransaction(Long id) {
+    public TransactionResponseDto getTransaction(UUID id) {
         return mapToDto(repository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(id)));
+                .orElseThrow(() -> new TransactionNotFoundException(id.toString())));
     }
 
     public List<TransactionResponseDto> searchTransactions(TransactionFilterDto filter) {
-        return repository.findAllByFilter(filter).stream()
+        return repository.findAllByFilter(filter.getStartDate(), filter.getEndDate(),
+                        filter.getTransactionType(), filter.getStatus(), filter.getCategory()).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public TransactionResponseDto updateTransaction(Long id, TransactionRequestDto dto) {
+    public TransactionResponseDto updateTransaction(UUID id, TransactionRequestDto dto) {
         Transaction entity = repository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(id));
+                .orElseThrow(() -> new TransactionNotFoundException(id.toString()));
 
         validationService.validateTransaction(dto);
         updateEntity(entity, dto);
@@ -52,22 +55,21 @@ public class TransactionService {
         return mapToDto(repository.save(entity));
     }
 
-    @Transactional
-    public void deleteTransaction(Long id) {
+    public void deleteTransaction(UUID id) {
         Transaction entity = repository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(id));
+                .orElseThrow(() -> new TransactionNotFoundException(id.toString()));
         entity.setDeleted(true);
         repository.save(entity);
     }
 
     private Transaction mapToEntity(TransactionRequestDto dto) {
         Transaction entity = new Transaction();
-        entity.setPersonType(dto.getPersonType());
+        entity.setPersonType(PersonType.valueOf(dto.getPersonType().toUpperCase()));
         entity.setOperationDate(dto.getOperationDate());
-        entity.setTransactionType(dto.getTransactionType());
+        entity.setTransactionType(TransactionType.valueOf(dto.getTransactionType().toUpperCase()));
         entity.setComment(dto.getComment());
         entity.setAmount(dto.getAmount());
-        entity.setStatus(dto.getStatus());
+        entity.setStatus(TransactionStatus.valueOf(dto.getStatus().toUpperCase()));
         entity.setSenderBank(dto.getSenderBank());
         entity.setAccount(dto.getAccount());
         entity.setReceiverBank(dto.getReceiverBank());
@@ -79,12 +81,12 @@ public class TransactionService {
     }
 
     private void updateEntity(Transaction entity, TransactionRequestDto dto) {
-        entity.setPersonType(dto.getPersonType());
+        entity.setPersonType(PersonType.valueOf(dto.getPersonType().toUpperCase()));
         entity.setOperationDate(dto.getOperationDate());
-        entity.setTransactionType(dto.getTransactionType());
+        entity.setTransactionType(TransactionType.valueOf(dto.getTransactionType().toUpperCase()));
         entity.setComment(dto.getComment());
         entity.setAmount(dto.getAmount());
-        entity.setStatus(dto.getStatus());
+        entity.setStatus(TransactionStatus.valueOf(dto.getStatus().toUpperCase()));
         entity.setSenderBank(dto.getSenderBank());
         entity.setAccount(dto.getAccount());
         entity.setReceiverBank(dto.getReceiverBank());
@@ -97,12 +99,12 @@ public class TransactionService {
     private TransactionResponseDto mapToDto(Transaction entity) {
         TransactionResponseDto dto = new TransactionResponseDto();
         dto.setId(entity.getId());
-        dto.setPersonType(entity.getPersonType());
+        dto.setPersonType(entity.getPersonType().name());
         dto.setOperationDate(entity.getOperationDate());
-        dto.setTransactionType(entity.getTransactionType());
+        dto.setTransactionType(entity.getTransactionType().name());
         dto.setComment(entity.getComment());
         dto.setAmount(entity.getAmount());
-        dto.setStatus(entity.getStatus());
+        dto.setStatus(entity.getStatus().name());
         dto.setSenderBank(entity.getSenderBank());
         dto.setAccount(entity.getAccount());
         dto.setReceiverBank(entity.getReceiverBank());
