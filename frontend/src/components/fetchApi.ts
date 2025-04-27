@@ -69,7 +69,7 @@ export const isAuthenticated = () => {
 };
 
 // Выход из системы
-export const logout = () => {
+export const logout = async () => {
   localStorage.removeItem('isLoggedIn');
   localStorage.removeItem('access_token');
 };

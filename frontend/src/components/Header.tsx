@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { AuthContext } from './AuthContext';
+import { AuthContext, type AuthContextProps } from './AuthContext';
 
 const Header: React.FC = () => {
-  const context = useContext(AuthContext);
+  const context = useContext<AuthContextProps>(AuthContext);
 
   if (!context) {
     throw new Error('AuthContext must be used within an AuthProvider');

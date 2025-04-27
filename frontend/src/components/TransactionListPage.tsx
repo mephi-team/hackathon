@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import TransactionFilter from './TransactionFilter';
 import { Transaction } from "../interfaces/Transaction";
+import {FilterData} from "../interfaces/FilterData";
 
 
 interface TransactionListPageProps {
@@ -13,7 +14,7 @@ const TransactionListPage: React.FC<TransactionListPageProps> = ({ transactions 
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactions);
 
   // Логика фильтрации
-  const handleFilter = (filters: any) => {
+  const handleFilter = (filters: FilterData) => {
     const filtered = transactions.filter((t) => {
       const matchesSenderBank =
         !filters.senderBank || t.senderBank === filters.senderBank;
@@ -23,8 +24,8 @@ const TransactionListPage: React.FC<TransactionListPageProps> = ({ transactions 
 
       // Обработка дат
       const matchesDate =
-        (!filters.date?.[0] || new Date(t.operationDate) >= new Date(filters.date[0])) &&
-        (!filters.date?.[1] || new Date(t.operationDate) <= new Date(filters.date[1]));
+        (!filters.date?.[0] || new Date(t.operationDate) >= new Date(filters.date?.[0] || new Date(t.operationDate))) &&
+        (!filters.date?.[1] || new Date(t.operationDate) <= new Date(filters.date?.[1] || new Date(t.operationDate)));
 
       const matchesStatus =
         !filters.status || t.status === filters.status;

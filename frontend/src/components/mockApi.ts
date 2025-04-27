@@ -5,10 +5,10 @@ let mockTransactions : Transaction[] = [
   {
     id: "1",
     personType: "",
-    dateTime: '2023-11-01',
+    operationDate: '2023-11-01',
     transactionType: 'income',
     comment: "",
-    amount: "5000",
+    amount: 5000,
     status: "",
     senderBank: "Bank1",
     account: "",
@@ -21,10 +21,10 @@ let mockTransactions : Transaction[] = [
   {
     id: "2",
     personType: "",
-    dateTime: '2023-11-01',
+    operationDate: '2023-11-01',
     transactionType: 'income',
     comment: "",
-    amount: "1000",
+    amount: 1000,
     status: "",
     senderBank: "Bank1",
     account: "",
@@ -37,10 +37,10 @@ let mockTransactions : Transaction[] = [
   {
     id: "3",
     personType: "",
-    dateTime: '2023-10-01',
+    operationDate: '2023-10-01',
     transactionType: 'expense',
     comment: "",
-    amount: "3000",
+    amount: 3000,
     status: "",
     senderBank: "Bank2",
     account: "",
@@ -53,10 +53,10 @@ let mockTransactions : Transaction[] = [
   {
     id: "4",
     personType: "",
-    dateTime: '2023-10-01',
+    operationDate: '2023-10-01',
     transactionType: 'expense',
     comment: "",
-    amount: "500",
+    amount: 500,
     status: "",
     senderBank: "Bank1",
     account: "",
@@ -69,10 +69,10 @@ let mockTransactions : Transaction[] = [
   {
     id: "5",
     personType: "",
-    dateTime: '2023-10-01',
+    operationDate: '2023-10-01',
     transactionType: 'expense',
     comment: "",
-    amount: "50",
+    amount: 50,
     status: "",
     senderBank: "Bank3",
     account: "",
@@ -85,10 +85,10 @@ let mockTransactions : Transaction[] = [
   {
     id: "6",
     personType: "",
-    dateTime: '2023-10-01',
+    operationDate: '2023-10-01',
     transactionType: 'expense',
     comment: "",
-    amount: "2000",
+    amount: 2000,
     status: "",
     senderBank: "Bank4",
     account: "",
@@ -116,13 +116,13 @@ export const fetchTransactions = async () => {
   return [...mockTransactions]; // Возвращаем копию массива для предотвращения мутаций
 };
 
-export const addTransaction = async (newTransaction: any) => {
+export const addTransaction = async (newTransaction: Transaction) => {
   console.log('Добавление транзакции:', newTransaction); // Отладочный лог
   await delay(500); // Имитация задержки сети
   mockTransactions.push(newTransaction);
 };
 
-export const updateTransaction = async (updatedTransaction: any) => {
+export const updateTransaction = async (updatedTransaction: Transaction) => {
   await delay(500); // Имитация задержки сети
   const index = mockTransactions.findIndex((t) => t.id === updatedTransaction.id);
   if (index !== -1) {

@@ -7,7 +7,7 @@ import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import Footer from './components/Footer';
 import LoginPage from './components/LoginPage';
-import { AuthProvider } from './components/AuthContext';
+import { AuthProvider } from './components/AuthProvider';
 import {
   fetchTransactions,
   addTransaction as fetchAddTransaction,

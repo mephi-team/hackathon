@@ -21,7 +21,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     operationDate: '',
     transactionType: 'INCOME',
     comment: '',
-    amount: '',
+    amount: 0,
     status: 'NEW',
     senderBank: '',
     account: '',
@@ -59,7 +59,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     if (!formData.transactionType) newErrors.transactionType = 'Тип транзакции обязателен';
     if (!formData.amount) {
       newErrors.amount = 'Сумма обязательна';
-    } else if (!/^\d+(\.\d{1,5})?$/.test(formData.amount)) {
+    } else if (!/^\d+(\.\d{1,5})?$/.test(`${formData.amount}`)) {
       newErrors.amount = 'Сумма должна быть числом с точностью до 5 знаков';
     }
     if (!formData.status) newErrors.status = 'Статус операции обязателен';
@@ -100,7 +100,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       operationDate: '',
       transactionType: 'INCOME',
       comment: '',
-      amount: '',
+      amount: 0,
       status: 'NEW',
       senderBank: '',
       account: '',

@@ -1,17 +1,7 @@
 // components/TransactionFilter.tsx
 
 import React, { useState } from 'react';
-
-interface FilterData {
-  senderBank?: string;
-  receiverBank?: string;
-  date?: [string, string];
-  status?: string;
-  inn?: string;
-  amountRange?: [number, number];
-  transactionType?: string;
-  category?: string;
-}
+import {FilterData} from "../interfaces/FilterData";
 
 interface TransactionFilterProps {
   onFilter: (filters: FilterData) => void;

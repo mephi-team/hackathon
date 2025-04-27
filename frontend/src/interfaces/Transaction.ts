@@ -6,7 +6,7 @@ export interface Transaction {
   operationDate: string; // Дата и время операции
   transactionType: string; // Тип транзакции
   comment: string; // Комментарий к операции
-  amount: string; // Сумма с точностью до 5 знаков
+  amount: number; // Сумма с точностью до 5 знаков
   status: string; // Статус операции
   senderBank: string; // Банк отправителя
   account: string; // Счет поступления/списания
