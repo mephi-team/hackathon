@@ -32,6 +32,8 @@ server:
 app:
   role:
     users: ${APP_ROLE_USERS:user}
+  auth:
+    enabled: ${APP_AUTH_ENABLED:true}
   http:
     cors:
       headers: ${APP_HTTP_CORS_HEADERS:authorization}

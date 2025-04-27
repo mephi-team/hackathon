@@ -37,17 +37,23 @@ public class SecurityConfiguration {
     List<String> httpCorsMethods;
     @Value("${app.role.users}")
     String userRole;
+    @Value("${app.auth.enabled}")
+    boolean authEnabled;
 
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http
-                .cors(Customizer.withDefaults())
-                .authorizeExchange((authorize) -> authorize
-                        .anyExchange().access(hasAuthority(userRole))
-                )
-                .oauth2ResourceServer(resourceServer -> resourceServer
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor()))
-                );
+        if (authEnabled) {
+            http
+                    .cors(Customizer.withDefaults())
+                    .authorizeExchange((authorize) -> authorize
+                            .anyExchange().access(hasAuthority(userRole))
+                    )
+                    .oauth2ResourceServer(resourceServer -> resourceServer
+                            .jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor()))
+                    );
+        } else {
+            http.csrf(ServerHttpSecurity.CsrfSpec::disable);
+        }
         return http.build();
     }
 
