@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import {FilterData} from "../interfaces/FilterData";
+import {fetchExcel, fetchPdf} from "./fetchApi";
 
 interface TransactionFilterProps {
   onFilter: (filters: FilterData) => void;
@@ -37,6 +38,34 @@ const TransactionFilter: React.FC<TransactionFilterProps> = ({ onFilter, onReset
     setFilters({}); // Очищаем состояние фильтров
     onReset(); // Вызываем коллбэк для сброса данных в родительском компоненте
   };
+
+  const download = async (fetch: () => Promise<Blob>, ext: string) => {
+    try {
+      const blob = await fetch();
+      //@ts-ignore
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `transaction-report.${ext}`); // Имя файла
+      document.body.appendChild(link);
+      link.click();
+
+      // Очищаем ссылку
+      link.remove();
+      //@ts-ignore
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Ошибка:', error);
+      alert('Не удалось скачать файл.');
+    }
+  }
+  const handleDownloadPdf = async () => {
+    await download(fetchPdf, "pdf");
+  }
+
+  const handleDownloadExcel = async () => {
+    await download(fetchExcel, "xlsx");
+  }
 
   return (
     <div className="card shadow-sm mb-4">
@@ -249,6 +278,20 @@ const TransactionFilter: React.FC<TransactionFilterProps> = ({ onFilter, onReset
               onClick={handleReset} // Добавляем обработчик для сброса
             >
               Сбросить фильтр
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={handleDownloadPdf} // Добавляем обработчик для сброса
+            >
+              Скачать PDF
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={handleDownloadExcel} // Добавляем обработчик для сброса
+            >
+              Скачать Excel
             </button>
           </div>
         </form>

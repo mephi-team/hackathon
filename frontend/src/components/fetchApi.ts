@@ -1,5 +1,25 @@
 import {Transaction} from "../interfaces/Transaction";
 
+export const fetchPdf = async () => {
+  console.log('Вызов fetchPdf');
+  const response = await fetch("http://localhost:8000/api/reports/transactions/pdf", {
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+    }
+  });
+  return await response.blob();
+};
+
+export const fetchExcel = async () => {
+  console.log('Вызов fetchExcel');
+  const response = await fetch("http://localhost:8000/api/reports/transactions/excel", {
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+    }
+  });
+  return await response.blob();
+};
+
 export const fetchTransactions = async () => {
   console.log('Вызов fetchTransactions');
   const response = await fetch("http://localhost:8000/api/transactions", {
