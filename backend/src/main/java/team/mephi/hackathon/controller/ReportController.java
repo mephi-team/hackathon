@@ -15,6 +15,10 @@ import team.mephi.hackathon.service.ReportService;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * REST-контроллер для скачивания отчётов по транзакциям.
+ * Формат отчётов отражает все поля из {@link team.mephi.hackathon.dto.TransactionRequestDto}.
+ */
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
@@ -23,29 +27,38 @@ public class ReportController {
     private final TransactionRepository transactionRepository;
     private final ReportService reportService;
 
+    /**
+     * Сформировать и отдать PDF-отчёт.
+     */
     @GetMapping(value = "/transactions/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> generatePdfReport() throws IOException {
         List<Transaction> transactions = transactionRepository.findAllByDeletedFalse();
 
         if (transactions.isEmpty()) {
-            throw new NoTransactionsFoundException("Нет активных транзакций для отчета");
+            throw new NoTransactionsFoundException("Нет активных транзакций для отчёта");
         }
 
+        byte[] pdfBytes = reportService.generatePdfReport(transactions);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transactions-report.pdf")
-                .body(reportService.generatePdfReport(transactions));
+                .body(pdfBytes);
     }
 
-    @GetMapping(value = "/transactions/excel", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    /**
+     * Сформировать и отдать Excel-отчёт.
+     */
+    @GetMapping(value = "/transactions/excel",
+            produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> generateExcelReport() throws IOException {
         List<Transaction> transactions = transactionRepository.findAllByDeletedFalse();
 
         if (transactions.isEmpty()) {
-            throw new NoTransactionsFoundException("Нет активных транзакций для отчета");
+            throw new NoTransactionsFoundException("Нет активных транзакций для отчёта");
         }
 
+        byte[] excelBytes = reportService.generateExcelReport(transactions);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transactions-report.xlsx")
-                .body(reportService.generateExcelReport(transactions));
+                .body(excelBytes);
     }
 }
