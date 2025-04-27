@@ -37,6 +37,7 @@ public class TransactionController {
     public List<Transaction> getTransactions(
             @RequestParam(required = false) String senderBank,
             @RequestParam(required = false) String receiverBank,
+            @RequestParam(required = false) String transactionType,          // NEW
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
             @RequestParam(required = false) BigDecimal amountMin,
@@ -44,11 +45,12 @@ public class TransactionController {
             @RequestParam(required = false) String category) {
 
         Specification<Transaction> specification = Specification
-                .where(team.mephi.hackathon.specification.TransactionSpecification.hasSenderBank(senderBank))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasReceiverBank(receiverBank))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasDateBetween(dateFrom, dateTo))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasAmountBetween(amountMin, amountMax))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasCategory(category));
+                .where(TransactionSpecification.hasSenderBank(senderBank))
+                .and(TransactionSpecification.hasReceiverBank(receiverBank))
+                .and(TransactionSpecification.hasTransactionType(transactionType))   // NEW
+                .and(TransactionSpecification.hasDateBetween(dateFrom, dateTo))
+                .and(TransactionSpecification.hasAmountBetween(amountMin, amountMax))
+                .and(TransactionSpecification.hasCategory(category));
 
         return service.getTransactions(specification);
     }
