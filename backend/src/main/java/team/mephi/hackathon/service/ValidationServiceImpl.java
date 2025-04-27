@@ -29,7 +29,7 @@ public class ValidationServiceImpl implements ValidationService {
     private void validatePhone(String phone) {
         if (phone == null) return;
 
-        if (!phone.matches("^[78]\\d{10}$")) {
+        if (!phone.matches("^(\\+7|8)\\d{10}$")) {
             throw new ValidationException("Телефон должен быть в формате 7XXXXXXXXXX или 8XXXXXXXXXX");
         }
     }

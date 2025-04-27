@@ -44,7 +44,7 @@ public class TransactionRequestDto {
     @NotBlank(message = "Категория обязательна")
     private String category;
 
-    @Pattern(regexp = "^[78]\\d{10}$", message = "Некорректный телефон")
+    @Pattern(regexp = "^(\\+7|8)\\d{10}$", message = "Некорректный телефон")
     private String receiverPhone;
 
 }
