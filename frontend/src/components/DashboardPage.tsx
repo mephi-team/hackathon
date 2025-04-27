@@ -1,6 +1,6 @@
 // components/DashboardPage.tsx
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -13,15 +13,21 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import {Transaction} from "../interfaces/Transaction";
-
-interface DashboardPageProps {
-  transactions: Transaction[];
-}
+import { Transaction } from '../interfaces/Transaction';
+import { fetchTransactions } from '../components/fetchApi';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-const DashboardPage: React.FC<DashboardPageProps> = ({ transactions }) => {
+const DashboardPage: React.FC = () => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  // Загрузка транзакций при монтировании
+  useEffect(() => {
+    const loadTransactions = async () => {
+      const data = await fetchTransactions();
+      setTransactions(data);
+    };
+    loadTransactions();
+  }, []);
   // Группировка данных по неделям/месяцам/кварталам/годам
   const groupByTimePeriod = (period: 'week' | 'month' | 'quarter' | 'year') => {
     const grouped: Record<string, number> = {};

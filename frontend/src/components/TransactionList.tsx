@@ -1,17 +1,36 @@
-import React from 'react';
-import {Transaction} from "../interfaces/Transaction";
+import React, {useState, useEffect, use} from 'react';
+import { Transaction } from '../interfaces/Transaction';
+import {
+  fetchTransactions,
+  deleteTransaction as fetchDeleteTransaction,
+} from '../components/fetchApi';
 
 interface TransactionListProps {
-  transactions: Transaction[];
-  deleteTransaction: (id: string) => void;
   onEdit: (transaction: Transaction) => void; // Новая функция для редактирования
 }
 
-const TransactionList: React.FC<TransactionListProps> = ({
-                                                           transactions,
-                                                           deleteTransaction,
-                                                           onEdit,
-                                                         }) => {
+const TransactionList: React.FC<TransactionListProps> = ({ onEdit }) => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [editingTransaction, setEditingTransaction] = useState(false)
+  // Загрузка транзакций при монтировании
+  useEffect(() => {
+    const loadTransactions = async () => {
+      const data = await fetchTransactions();
+      setTransactions(data);
+      setEditingTransaction(false);
+    };
+    loadTransactions();
+  }, [editingTransaction]);
+
+  const handleDeleteTransaction = async (id: string) => {
+    try {
+      await fetchDeleteTransaction(id); // Удаляем через fetchApi
+      setTransactions((prev) => prev.filter((t) => t.id !== id)); // Обновляем состояние
+    } catch (error) {
+      console.error("Ошибка при удалении транзакции:", error);
+    }
+  };
+
   return (
     <div className="card shadow-sm mb-4">
       <div className="card-body">
@@ -33,13 +52,13 @@ const TransactionList: React.FC<TransactionListProps> = ({
                 <div>
                   <button
                     className="btn btn-sm btn-outline-primary me-2"
-                    onClick={() => onEdit(t)} // Передаем данные транзакции
+                    onClick={() => {onEdit(t);setEditingTransaction(true);}} // Передаем данные транзакции
                   >
                     Редактировать
                   </button>
                   <button
                     className="btn btn-sm btn-outline-danger"
-                    onClick={() => deleteTransaction(t.id || "")}
+                    onClick={() => handleDeleteTransaction(t.id || "")}
                   >
                     Удалить
                   </button>

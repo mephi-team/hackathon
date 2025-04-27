@@ -3,21 +3,40 @@
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid'; // Генерация уникального ID
 import { Transaction } from '../interfaces/Transaction';
+import {
+  addTransaction as fetchAddTransaction,
+  updateTransaction as fetchUpdateTransaction,
+} from '../components/fetchApi';
 
 interface TransactionFormProps {
-  addTransaction: (transaction: Transaction) => void;
-  updateTransaction: (transaction: Transaction) => void;
   editingTransaction: Transaction | null;
 }
 
-const TransactionForm: React.FC<TransactionFormProps> = ({
-                                                           addTransaction,
-                                                           updateTransaction,
-                                                           editingTransaction,
-                                                         }) => {
+const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction }) => {
+  const handleUpdateTransaction = async (updatedTransaction: Transaction) => {
+    try {
+      await fetchUpdateTransaction(updatedTransaction); // Обновляем через fetchApi
+      // setTransactions((prev) =>
+      //   prev.map((t) =>
+      //     t.id === updatedTransaction.id ? updatedTransaction : t
+      //   )
+      // ); // Обновляем состояние
+      // setEditingTransaction(null); // Сбрасываем редактируемую транзакцию
+    } catch (error) {
+      console.error("Ошибка при обновлении транзакции:", error);
+    }
+  };
+  const handleAddTransaction = async (newTransaction: Transaction) => {
+    try {
+      await fetchAddTransaction(newTransaction);
+      // setTransactions((prev) => [...prev, newTransaction]);
+    } catch (error) {
+      console.error("Ошибка при добавлении транзакции:", error);
+    }
+  };
   const [formData, setFormData] = useState<Transaction>({
     id: null,
-    personType: 'Физическое лицо',
+    personType: 'PHYSICAL',
     operationDate: '',
     transactionType: 'INCOME',
     comment: '',
@@ -80,10 +99,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     setIsLoading(true);
     try {
       if (isEditMode && formData.id) {
-        await updateTransaction(formData); // Обновляем транзакцию
+        await handleUpdateTransaction(formData); // Обновляем транзакцию
       } else {
         const newTransaction = { ...formData, id: uuidv4() }; // Генерируем уникальный ID
-        await addTransaction(newTransaction); // Добавляем новую транзакцию
+        await handleAddTransaction(newTransaction); // Добавляем новую транзакцию
       }
       resetForm(); // Сбрасываем форму
     } catch (error) {
@@ -310,48 +329,48 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             </div>
           </div>
 
-              <div className="mb-3">
-                <label htmlFor="comment" className="form-label">
-                  Комментарий к операции
-                </label>
-                <textarea
-                  className="form-control"
-                  id="comment"
-                  name="comment"
-                  value={formData.comment}
-                  onChange={handleChange}
-                ></textarea>
-              </div>
+          <div className="mb-3">
+            <label htmlFor="comment" className="form-label">
+              Комментарий к операции
+            </label>
+            <textarea
+              className="form-control"
+              id="comment"
+              name="comment"
+              value={formData.comment}
+              onChange={handleChange}
+            ></textarea>
+          </div>
 
-              {/* Категория */}
-              <div className="mb-3">
-                <label htmlFor="category" className="form-label">
-                  Категория
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                />
-              </div>
+          {/* Категория */}
+          <div className="mb-3">
+            <label htmlFor="category" className="form-label">
+              Категория
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+            />
+          </div>
 
-              {/* Счет поступления/списания */}
-              <div className="mb-3">
-                <label htmlFor="account" className="form-label">
-                  Счет поступления/списания
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="account"
-                  name="account"
-                  value={formData.account}
-                  onChange={handleChange}
-                />
-              </div>
+          {/* Счет поступления/списания */}
+          <div className="mb-3">
+            <label htmlFor="account" className="form-label">
+              Счет поступления/списания
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="account"
+              name="account"
+              value={formData.account}
+              onChange={handleChange}
+            />
+          </div>
 
           {/* Кнопка отправки */}
           <button type="submit" className="btn btn-success w-100" disabled={isLoading}>

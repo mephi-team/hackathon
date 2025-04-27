@@ -1,17 +1,23 @@
 // components/TransactionListPage.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TransactionFilter from './TransactionFilter';
-import { Transaction } from "../interfaces/Transaction";
-import {FilterData} from "../interfaces/FilterData";
+import { Transaction } from '../interfaces/Transaction';
+import { FilterData } from '../interfaces/FilterData';
+import { fetchTransactions } from '../components/fetchApi';
 
-
-interface TransactionListPageProps {
-  transactions: Transaction[];
-}
-
-const TransactionListPage: React.FC<TransactionListPageProps> = ({ transactions }) => {
-  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactions);
+const TransactionListPage: React.FC = () => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] =
+    useState<Transaction[]>(transactions);
+  // Загрузка транзакций при монтировании
+  useEffect(() => {
+    const loadTransactions = async () => {
+      const data = await fetchTransactions();
+      setTransactions(data);
+    };
+    loadTransactions();
+  }, []);
 
   // Логика фильтрации
   const handleFilter = (filters: FilterData) => {
@@ -74,38 +80,38 @@ const TransactionListPage: React.FC<TransactionListPageProps> = ({ transactions 
         <div className="card-body">
           <table className="table table-striped">
             <thead>
-            <tr>
-              <th>ID</th>
-              <th>Дата и время</th>
-              <th>Тип операции</th>
-              <th>Сумма</th>
-              <th>Статус</th>
-              <th>Банк отправителя</th>
-              <th>Банк получателя</th>
-              <th>Категория</th>
-            </tr>
+              <tr>
+                <th>ID</th>
+                <th>Дата и время</th>
+                <th>Тип операции</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+                <th>Банк отправителя</th>
+                <th>Банк получателя</th>
+                <th>Категория</th>
+              </tr>
             </thead>
             <tbody>
-            {filteredTransactions.length > 0 ? (
-              filteredTransactions.map((t) => (
-                <tr key={t.id}>
-                  <td>{t.id}</td>
-                  <td>{t.operationDate}</td>
-                  <td>{t.transactionType}</td>
-                  <td>{t.amount}</td>
-                  <td>{t.status}</td>
-                  <td>{t.senderBank}</td>
-                  <td>{t.receiverBank}</td>
-                  <td>{t.category}</td>
+              {filteredTransactions.length > 0 ? (
+                filteredTransactions.map((t) => (
+                  <tr key={t.id}>
+                    <td>{t.id}</td>
+                    <td>{t.operationDate}</td>
+                    <td>{t.transactionType}</td>
+                    <td>{t.amount}</td>
+                    <td>{t.status}</td>
+                    <td>{t.senderBank}</td>
+                    <td>{t.receiverBank}</td>
+                    <td>{t.category}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="text-center">
+                    Нет данных
+                  </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={8} className="text-center">
-                  Нет данных
-                </td>
-              </tr>
-            )}
+              )}
             </tbody>
           </table>
         </div>

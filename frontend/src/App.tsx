@@ -1,66 +1,25 @@
 // App.tsx
 
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import Header from './components/Header';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import Footer from './components/Footer';
 import LoginPage from './components/LoginPage';
 import { AuthProvider } from './components/AuthProvider';
-import {
-  fetchTransactions,
-  addTransaction as fetchAddTransaction,
-  updateTransaction as fetchUpdateTransaction,
-  deleteTransaction as fetchDeleteTransaction,
-} from './components/fetchApi';
-import ProtectedRoutes from "./components/ProtectedRoutes";
-import DashboardPage from "./components/DashboardPage";
-import TransactionListPage from "./components/TransactionListPage";
-import {Transaction} from "./interfaces/Transaction";
+import ProtectedRoutes from './components/ProtectedRoutes';
+import DashboardPage from './components/DashboardPage';
+import TransactionListPage from './components/TransactionListPage';
+import { Transaction } from './interfaces/Transaction';
 
 const App: React.FC = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null); // Состояние для редактируемой транзакции
-
-  // Загрузка транзакций при монтировании
-  useEffect(() => {
-    const loadTransactions = async () => {
-      const data = await fetchTransactions();
-      setTransactions(data);
-    };
-    loadTransactions();
-  }, []);
-
-  const handleAddTransaction = async (newTransaction: Transaction) => {
-    try {
-      await fetchAddTransaction(newTransaction);
-      setTransactions((prev) => [...prev, newTransaction]);
-    } catch (error) {
-      console.error('Ошибка при добавлении транзакции:', error);
-    }
-  };
-
-  const handleUpdateTransaction = async (updatedTransaction: Transaction) => {
-    try {
-      await fetchUpdateTransaction(updatedTransaction); // Обновляем через fetchApi
-      setTransactions((prev) =>
-        prev.map((t) => (t.id === updatedTransaction.id ? updatedTransaction : t))
-      ); // Обновляем состояние
-      setEditingTransaction(null); // Сбрасываем редактируемую транзакцию
-    } catch (error) {
-      console.error('Ошибка при обновлении транзакции:', error);
-    }
-  };
-
-  const handleDeleteTransaction = async (id: string) => {
-    try {
-      await fetchDeleteTransaction(id); // Удаляем через fetchApi
-      setTransactions((prev) => prev.filter((t) => t.id !== id)); // Обновляем состояние
-    } catch (error) {
-      console.error('Ошибка при удалении транзакции:', error);
-    }
-  };
 
   const handleEdit = (transaction: Transaction) => {
     setEditingTransaction(transaction); // Устанавливаем редактируемую транзакцию
@@ -84,13 +43,9 @@ const App: React.FC = () => {
                     element={
                       <>
                         <TransactionForm
-                          addTransaction={handleAddTransaction}
-                          updateTransaction={handleUpdateTransaction}
                           editingTransaction={editingTransaction} // Передаем редактируемую транзакцию
                         />
                         <TransactionList
-                          transactions={transactions}
-                          deleteTransaction={handleDeleteTransaction}
                           onEdit={handleEdit} // Передаем функцию для редактирования
                         />
                       </>
@@ -98,11 +53,11 @@ const App: React.FC = () => {
                   />
                   <Route
                     path="transactions"
-                    element={<TransactionListPage transactions={transactions} />}
+                    element={<TransactionListPage />}
                   />
                   <Route
                     path="report"
-                    element={<DashboardPage transactions={transactions} />}
+                    element={<DashboardPage />}
                   />
                   {/*<Route index element={<Navigate to="transactions" />} />*/}
                 </Route>
