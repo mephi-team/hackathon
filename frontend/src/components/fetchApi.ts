@@ -32,7 +32,7 @@ export const fetchTransactions = async () => {
 
 export const addTransaction = async (newTransaction: Transaction) => {
   console.log('Добавление транзакции:', newTransaction); // Отладочный лог
-  await fetch(`${import.meta.env.VITE_APP_API_URL}/api/transactions`, {
+  const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/api/transactions`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${getAuth()}`,
@@ -40,6 +40,7 @@ export const addTransaction = async (newTransaction: Transaction) => {
     },
     body: JSON.stringify(newTransaction)
   });
+  return {status: response.status, body: await response.json()};
 };
 
 export const updateTransaction = async (updatedTransaction: Transaction) => {

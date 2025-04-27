@@ -28,7 +28,16 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction })
   };
   const handleAddTransaction = async (newTransaction: Transaction) => {
     try {
-      await fetchAddTransaction(newTransaction);
+      const { status, body } = await fetchAddTransaction(newTransaction);
+      if (status === 400) {
+        const newErrors: { [key: string]: string } = {};
+        Object.keys(body).forEach(name => {
+          newErrors[name] = body[name];
+        })
+        setErrors(newErrors);
+      } else {
+        resetForm();
+      }
       // setTransactions((prev) => [...prev, newTransaction]);
     } catch (error) {
       console.error("Ошибка при добавлении транзакции:", error);
@@ -100,11 +109,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction })
     try {
       if (isEditMode && formData.id) {
         await handleUpdateTransaction(formData); // Обновляем транзакцию
+        resetForm();
       } else {
         const newTransaction = { ...formData, id: uuidv4() }; // Генерируем уникальный ID
         await handleAddTransaction(newTransaction); // Добавляем новую транзакцию
       }
-      resetForm(); // Сбрасываем форму
+      // resetForm(); // Сбрасываем форму
     } catch (error) {
       console.error('Ошибка при сохранении транзакции:', error);
     } finally {
@@ -168,12 +178,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction })
                 </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${errors.senderBank ? 'is-invalid' : ''}`}
                   id="senderBank"
                   name="senderBank"
                   value={formData.senderBank}
                   onChange={handleChange}
                 />
+                {errors.senderBank && <div className="invalid-feedback">{errors.senderBank}</div>}
               </div>
             </div>
           </div>
@@ -189,12 +200,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction })
                 </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${errors.receiverBank ? 'is-invalid' : ''}`}
                   id="receiverBank"
                   name="receiverBank"
                   value={formData.receiverBank}
                   onChange={handleChange}
                 />
+                {errors.receiverBank && <div className="invalid-feedback">{errors.receiverBank}</div>}
               </div>
 
               {/* ИНН получателя */}
@@ -220,12 +232,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction })
                 </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${errors.receiverAccount ? 'is-invalid' : ''}`}
                   id="receiverAccount"
                   name="receiverAccount"
                   value={formData.receiverAccount}
                   onChange={handleChange}
                 />
+                {errors.receiverAccount && <div className="invalid-feedback">{errors.receiverAccount}</div>}
               </div>
 
               {/* Телефон получателя */}
@@ -349,12 +362,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction })
             </label>
             <input
               type="text"
-              className="form-control"
+              className={`form-control ${errors.category ? 'is-invalid' : ''}`}
               id="category"
               name="category"
               value={formData.category}
               onChange={handleChange}
             />
+            {errors.category && <div className="invalid-feedback">{errors.category}</div>}
           </div>
 
           {/* Счет поступления/списания */}
@@ -364,12 +378,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ editingTransaction })
             </label>
             <input
               type="text"
-              className="form-control"
+              className={`form-control ${errors.account ? 'is-invalid' : ''}`}
               id="account"
               name="account"
               value={formData.account}
               onChange={handleChange}
             />
+            {errors.account && <div className="invalid-feedback">{errors.account}</div>}
           </div>
 
           {/* Кнопка отправки */}
