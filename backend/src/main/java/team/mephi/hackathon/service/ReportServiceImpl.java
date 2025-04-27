@@ -12,10 +12,19 @@ import team.mephi.hackathon.entity.Transaction;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ReportServiceImpl implements ReportService {
+
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
+    private static final NumberFormat MONEY_FORMAT =
+            NumberFormat.getNumberInstance(new Locale("ru", "RU"));
 
     public byte[] generatePdfReport(List<Transaction> transactions) throws IOException {
         try (PDDocument document = new PDDocument()) {
@@ -32,11 +41,25 @@ public class ReportServiceImpl implements ReportService {
                 contentStream.setFont(PDType1Font.HELVETICA, 10);
                 float y = 650;
                 for (Transaction transaction : transactions) {
-                    String line = String.format("ID: %s | Amount: %.2f | Description: %s",
-                            transaction.getId().toString(), transaction.getAmount(), transaction.getComment());
+                    String row = String.format(
+                            "%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+                            formatField(transaction.getPersonType()),
+                            transaction.getOperationDate().format(DATE_FORMATTER),
+                            formatField(transaction.getTransactionType()),
+                            formatField(transaction.getComment()),
+                            MONEY_FORMAT.format(transaction.getAmount()),
+                            formatField(transaction.getStatus()),
+                            formatField(transaction.getSenderBank()),
+                            formatField(transaction.getAccount()),
+                            formatField(transaction.getReceiverBank()),
+                            formatField(transaction.getReceiverInn()),
+                            formatField(transaction.getReceiverAccount()),
+                            formatField(transaction.getCategory()),
+                            formatField(transaction.getReceiverPhone())
+                    );
                     contentStream.beginText();
                     contentStream.newLineAtOffset(50, y);
-                    contentStream.showText(line);
+                    contentStream.showText(row);
                     contentStream.endText();
                     y -= 20;
                 }
@@ -54,20 +77,47 @@ public class ReportServiceImpl implements ReportService {
 
             // Заголовки
             Row headerRow = sheet.createRow(0);
-            String[] columns = {"ID", "Amount", "Currency", "Description"};
+            String[] columns = {"ID", "Operation date", "Transaction type", "Comment", "Amount", "Status",
+                    "Sender bank", "Account", "Receiver bank", "Receiver inn", "Receiver account", "Category",
+                    "Receiver phone"};
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(columns[i]);
             }
 
+            DataFormat poiFormat = workbook.createDataFormat();
+
+            CellStyle moneyStyle = workbook.createCellStyle();
+            moneyStyle.setDataFormat(poiFormat.getFormat("#,##0.00"));
+
+            CellStyle dateStyle = workbook.createCellStyle();
+            dateStyle.setDataFormat(poiFormat.getFormat("dd.mm.yyyy hh:mm"));
+
             // Данные
             int rowNum = 1;
             for (Transaction transaction : transactions) {
                 Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(transaction.getId().toString());
-                row.createCell(1).setCellValue(transaction.getAmount().toString());
-//                row.createCell(2).setCellValue(transaction.getCurrency());
-                row.createCell(2).setCellValue(transaction.getComment());
+                row.createCell(0).setCellValue(formatField(transaction.getPersonType()));
+
+                Cell dateCell = row.createCell(1);
+                dateCell.setCellValue(transaction.getOperationDate().format(DATE_FORMATTER));
+                dateCell.setCellStyle(dateStyle);
+
+                row.createCell(2).setCellValue(formatField(transaction.getTransactionType()));
+                row.createCell(3).setCellValue(formatField(transaction.getComment()));
+
+                Cell amountCell = row.createCell(4);
+                amountCell.setCellValue(transaction.getAmount().doubleValue());
+                amountCell.setCellStyle(moneyStyle);
+
+                row.createCell(5).setCellValue(formatField(transaction.getStatus()));
+                row.createCell(6).setCellValue(formatField(transaction.getSenderBank()));
+                row.createCell(7).setCellValue(formatField(transaction.getAccount()));
+                row.createCell(8).setCellValue(formatField(transaction.getReceiverBank()));
+                row.createCell(9).setCellValue(formatField(transaction.getReceiverInn()));
+                row.createCell(10).setCellValue(formatField(transaction.getReceiverAccount()));
+                row.createCell(11).setCellValue(formatField(transaction.getCategory()));
+                row.createCell(12).setCellValue(formatField(transaction.getReceiverPhone()));
             }
 
             // Авто-размер колонок
@@ -79,5 +129,9 @@ public class ReportServiceImpl implements ReportService {
             workbook.write(baos);
             return baos.toByteArray();
         }
+    }
+
+    private static String formatField(Object value) {
+        return value != null ? value.toString() : "";
     }
 }

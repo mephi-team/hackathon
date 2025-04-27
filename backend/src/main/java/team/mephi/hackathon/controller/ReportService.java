@@ -1,4 +1,4 @@
-package team.mephi.hackathon.service;
+package team.mephi.hackathon.controller;
 
 import team.mephi.hackathon.entity.Transaction;
 

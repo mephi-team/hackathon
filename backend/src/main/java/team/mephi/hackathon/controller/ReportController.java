@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.exceptions.NoTransactionsFoundException;
 import team.mephi.hackathon.repository.TransactionRepository;
-import team.mephi.hackathon.service.ReportService;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +31,7 @@ public class ReportController {
      */
     @GetMapping(value = "/transactions/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> generatePdfReport() throws IOException {
-        List<Transaction> transactions = transactionRepository.findAllByDeletedFalse();
+        List<Transaction> transactions = transactionRepository.findAllActive();
 
         if (transactions.isEmpty()) {
             throw new NoTransactionsFoundException("Нет активных транзакций для отчёта");
@@ -50,7 +49,7 @@ public class ReportController {
     @GetMapping(value = "/transactions/excel",
             produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> generateExcelReport() throws IOException {
-        List<Transaction> transactions = transactionRepository.findAllByDeletedFalse();
+        List<Transaction> transactions = transactionRepository.findAllActive();
 
         if (transactions.isEmpty()) {
             throw new NoTransactionsFoundException("Нет активных транзакций для отчёта");
