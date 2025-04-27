@@ -54,8 +54,8 @@ services:
       PG_USER: your_username
       PG_PASSWORD: your_password
       APP_ROLE_USERS: user
-      APP_HTTP_CORS_HEADERS: authorization
-      APP_HTTP_CORS_METHODS: GET
+      APP_HTTP_CORS_HEADERS: authorization,content-type
+      APP_HTTP_CORS_METHODS: GET,POST,PUT,DELETE
       APP_HTTP_CORS_ORIGINS: http://localhost:3000
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWK_SET_URI: http://keycloak:8080/realms/hackathon-realm/protocol/openid-connect/certs
     ports:
