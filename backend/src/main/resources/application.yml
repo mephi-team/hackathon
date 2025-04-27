@@ -26,9 +26,6 @@ spring:
           jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWK_SET_URI:http://localhost:8080/realms/hackathon-realm/protocol/openid-connect/certs}
 server:
   port: 8080
-  error:
-    include-message: always
-    include-binding-errors: always
 app:
   role:
     users: ${APP_ROLE_USERS:user}
