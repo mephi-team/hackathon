@@ -33,8 +33,8 @@ app:
     enabled: ${APP_AUTH_ENABLED:true}
   http:
     cors:
-      headers: ${APP_HTTP_CORS_HEADERS:authorization}
-      methods: ${APP_HTTP_CORS_METHODS:GET}
+      headers: ${APP_HTTP_CORS_HEADERS:authorization,content-type}
+      methods: ${APP_HTTP_CORS_METHODS:GET,POST,PUT,DELETE}
       origins: ${APP_HTTP_CORS_ORIGINS:*}
 logging:
   level:
