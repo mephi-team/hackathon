@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '17' # Укажите требуемую версию Java
 
     - name: Cache Maven dependencies
       uses: actions/cache@v3
@@ -31,4 +31,6 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Run Maven tests
-      run: mvn test
+      run: |
+        cd backend
+        mvn test
