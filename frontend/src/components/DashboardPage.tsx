@@ -26,7 +26,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ transactions }) => {
   const groupByTimePeriod = (period: 'week' | 'month' | 'quarter' | 'year') => {
     const grouped: Record<string, number> = {};
     transactions.forEach((t) => {
-      const date = new Date(t.dateTime);
+      const date = new Date(t.operationDate);
       let key;
       switch (period) {
         case 'week':
@@ -61,7 +61,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ transactions }) => {
 
   // Статистика по типу операции
   const getTypeStats = () => {
-    const stats: Record<string, number> = { income: 0, expense: 0 };
+    const stats: Record<string, number> = { INCOME: 0, OUTCOME: 0 };
     transactions.forEach((t) => {
       stats[t.transactionType]++;
     });

@@ -23,8 +23,8 @@ const TransactionListPage: React.FC<TransactionListPageProps> = ({ transactions 
 
       // Обработка дат
       const matchesDate =
-        (!filters.date?.[0] || new Date(t.dateTime) >= new Date(filters.date[0])) &&
-        (!filters.date?.[1] || new Date(t.dateTime) <= new Date(filters.date[1]));
+        (!filters.date?.[0] || new Date(t.operationDate) >= new Date(filters.date[0])) &&
+        (!filters.date?.[1] || new Date(t.operationDate) <= new Date(filters.date[1]));
 
       const matchesStatus =
         !filters.status || t.status === filters.status;
@@ -89,7 +89,7 @@ const TransactionListPage: React.FC<TransactionListPageProps> = ({ transactions 
               filteredTransactions.map((t) => (
                 <tr key={t.id}>
                   <td>{t.id}</td>
-                  <td>{t.dateTime}</td>
+                  <td>{t.operationDate}</td>
                   <td>{t.transactionType}</td>
                   <td>{t.amount}</td>
                   <td>{t.status}</td>

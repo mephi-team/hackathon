@@ -18,11 +18,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const [formData, setFormData] = useState<Transaction>({
     id: null,
     personType: 'Физическое лицо',
-    dateTime: '',
-    transactionType: 'Поступление',
+    operationDate: '',
+    transactionType: 'INCOME',
     comment: '',
     amount: '',
-    status: 'Новая',
+    status: 'NEW',
     senderBank: '',
     account: '',
     receiverBank: '',
@@ -55,7 +55,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
     if (!formData.personType) newErrors.personType = 'Тип лица обязателен';
-    if (!formData.dateTime) newErrors.dateTime = 'Дата и время обязательны';
+    if (!formData.operationDate) newErrors.operationDate = 'Дата и время обязательны';
     if (!formData.transactionType) newErrors.transactionType = 'Тип транзакции обязателен';
     if (!formData.amount) {
       newErrors.amount = 'Сумма обязательна';
@@ -96,12 +96,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   const resetForm = () => {
     setFormData({
       id: null,
-      personType: 'Физическое лицо',
-      dateTime: '',
-      transactionType: 'Поступление',
+      personType: 'PHYSICAL',
+      operationDate: '',
+      transactionType: 'INCOME',
       comment: '',
       amount: '',
-      status: 'Новая',
+      status: 'NEW',
       senderBank: '',
       account: '',
       receiverBank: '',
@@ -136,8 +136,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   onChange={handleChange}
                   required
                 >
-                  <option value="Физическое лицо">Физическое лицо</option>
-                  <option value="Юридическое лицо">Юридическое лицо</option>
+                  <option value="PHYSICAL">Физическое лицо</option>
+                  <option value="LEGAL">Юридическое лицо</option>
                 </select>
                 {errors.personType && <div className="invalid-feedback">{errors.personType}</div>}
               </div>
@@ -238,14 +238,14 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 </label>
                 <input
                   type="datetime-local"
-                  className={`form-control ${errors.dateTime ? 'is-invalid' : ''}`}
-                  id="dateTime"
-                  name="dateTime"
-                  value={formData.dateTime}
+                  className={`form-control ${errors.operationDate ? 'is-invalid' : ''}`}
+                  id="operationDate"
+                  name="operationDate"
+                  value={formData.operationDate}
                   onChange={handleChange}
                   required
                 />
-                {errors.dateTime && <div className="invalid-feedback">{errors.dateTime}</div>}
+                {errors.operationDate && <div className="invalid-feedback">{errors.operationDate}</div>}
               </div>
 
               {/* Тип транзакции */}
@@ -261,8 +261,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   onChange={handleChange}
                   required
                 >
-                  <option value="Поступление">Поступление</option>
-                  <option value="Списание">Списание</option>
+                  <option value="INCOME">Поступление</option>
+                  <option value="OUTCOME">Списание</option>
                 </select>
                 {errors.transactionType && <div className="invalid-feedback">{errors.transactionType}</div>}
               </div>
@@ -297,13 +297,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                   onChange={handleChange}
                   required
                 >
-                  <option value="Новая">Новая</option>
-                  <option value="Подтвержденная">Подтвержденная</option>
-                  <option value="В обработке">В обработке</option>
-                  <option value="Отменена">Отменена</option>
-                  <option value="Платеж выполнен">Платеж выполнен</option>
-                  <option value="Платеж удален">Платеж удален</option>
-                  <option value="Возврат">Возврат</option>
+                  <option value="NEW">Новая</option>
+                  <option value="CONFIRMED">Подтвержденная</option>
+                  <option value="IN_PROGRESS">В обработке</option>
+                  <option value="CANCELED">Отменена</option>
+                  <option value="COMPLETED">Платеж выполнен</option>
+                  <option value="DELETED">Платеж удален</option>
+                  <option value="REFUND">Возврат</option>
                 </select>
                 {errors.status && <div className="invalid-feedback">{errors.status}</div>}
               </div>

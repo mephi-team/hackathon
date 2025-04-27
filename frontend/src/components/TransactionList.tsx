@@ -28,7 +28,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                   </span>
                   <span>{t.amount} ₽</span>
                   <small className="text-muted ms-2">({t.category})</small>
-                  <small className="text-muted ms-2">{t.dateTime}</small>
+                  <small className="text-muted ms-2">{t.operationDate}</small>
                 </div>
                 <div>
                   <button
