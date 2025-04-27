@@ -42,7 +42,6 @@ const TransactionFilter: React.FC<TransactionFilterProps> = ({ onFilter, onReset
   const download = async (fetch: () => Promise<Blob>, ext: string) => {
     try {
       const blob = await fetch();
-      //@ts-ignore
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -52,7 +51,6 @@ const TransactionFilter: React.FC<TransactionFilterProps> = ({ onFilter, onReset
 
       // Очищаем ссылку
       link.remove();
-      //@ts-ignore
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Ошибка:', error);
