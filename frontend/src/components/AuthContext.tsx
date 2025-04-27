@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { login as mockLogin, logout as mockLogout, isAuthenticated } from './mockApi';
+import { login as fetchLogin, logout as fetchLogout, isAuthenticated } from './fetchApi';
 
 export const AuthContext = createContext<any | undefined>(undefined);
 
@@ -15,7 +15,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const handleLogin = async (credentials: { username: string; password: string }) => {
-    const success = await mockLogin(credentials); // Используем mockApi для входа
+    const success = await fetchLogin(credentials); // Используем fetchApi для входа
     if (success) {
       setIsLoggedIn(true);
     }
@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const handleLogout = () => {
-    mockLogout(); // Используем mockApi для выхода
+    fetchLogout(); // Используем fetchApi для выхода
     setIsLoggedIn(false);
   };
 

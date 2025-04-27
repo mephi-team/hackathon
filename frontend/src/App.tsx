@@ -10,10 +10,10 @@ import LoginPage from './components/LoginPage';
 import { AuthProvider } from './components/AuthContext';
 import {
   fetchTransactions,
-  addTransaction as mockAddTransaction,
-  updateTransaction as mockUpdateTransaction,
-  deleteTransaction as mockDeleteTransaction,
-} from './components/mockApi';
+  addTransaction as fetchAddTransaction,
+  updateTransaction as fetchUpdateTransaction,
+  deleteTransaction as fetchDeleteTransaction,
+} from './components/fetchApi';
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import DashboardPage from "./components/DashboardPage";
 import TransactionListPage from "./components/TransactionListPage";
@@ -34,7 +34,7 @@ const App: React.FC = () => {
 
   const handleAddTransaction = async (newTransaction: any) => {
     try {
-      await mockAddTransaction(newTransaction);
+      await fetchAddTransaction(newTransaction);
       setTransactions((prev) => [...prev, newTransaction]);
     } catch (error) {
       console.error('Ошибка при добавлении транзакции:', error);
@@ -43,7 +43,7 @@ const App: React.FC = () => {
 
   const handleUpdateTransaction = async (updatedTransaction: any) => {
     try {
-      await mockUpdateTransaction(updatedTransaction); // Обновляем через mockApi
+      await fetchUpdateTransaction(updatedTransaction); // Обновляем через fetchApi
       setTransactions((prev) =>
         prev.map((t) => (t.id === updatedTransaction.id ? updatedTransaction : t))
       ); // Обновляем состояние
@@ -55,7 +55,7 @@ const App: React.FC = () => {
 
   const handleDeleteTransaction = async (id: string) => {
     try {
-      await mockDeleteTransaction(id); // Удаляем через mockApi
+      await fetchDeleteTransaction(id); // Удаляем через fetchApi
       setTransactions((prev) => prev.filter((t) => t.id !== id)); // Обновляем состояние
     } catch (error) {
       console.error('Ошибка при удалении транзакции:', error);
