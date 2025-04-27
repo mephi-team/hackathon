@@ -1,4 +1,4 @@
-name: Maven Test
+name: CI Pipeline
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  backend-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,3 +34,30 @@ jobs:
       run: |
         cd backend
         mvn test
+
+  frontend-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Lint frontend
+      run: |
+        cd frontend
+        npm run lint
+
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
