@@ -42,7 +42,7 @@ const TransactionFilter: React.FC<TransactionFilterProps> = ({ onFilter, onReset
   const download = async (fetch: () => Promise<Blob>, ext: string) => {
     try {
       const blob = await fetch();
-      const url = window.URL.createObjectURL(blob);
+      const url = window["URL"].createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `transaction-report.${ext}`); // Имя файла
@@ -51,7 +51,7 @@ const TransactionFilter: React.FC<TransactionFilterProps> = ({ onFilter, onReset
 
       // Очищаем ссылку
       link.remove();
-      window.URL.revokeObjectURL(url);
+      window["URL"].revokeObjectURL(url);
     } catch (error) {
       console.error('Ошибка:', error);
       alert('Не удалось скачать файл.');
