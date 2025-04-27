@@ -21,7 +21,7 @@ import {Transaction} from "./interfaces/Transaction";
 
 const App: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [editingTransaction, setEditingTransaction] = useState(null); // Состояние для редактируемой транзакции
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null); // Состояние для редактируемой транзакции
 
   // Загрузка транзакций при монтировании
   useEffect(() => {
@@ -32,7 +32,7 @@ const App: React.FC = () => {
     loadTransactions();
   }, []);
 
-  const handleAddTransaction = async (newTransaction: any) => {
+  const handleAddTransaction = async (newTransaction: Transaction) => {
     try {
       await fetchAddTransaction(newTransaction);
       setTransactions((prev) => [...prev, newTransaction]);
@@ -41,7 +41,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleUpdateTransaction = async (updatedTransaction: any) => {
+  const handleUpdateTransaction = async (updatedTransaction: Transaction) => {
     try {
       await fetchUpdateTransaction(updatedTransaction); // Обновляем через fetchApi
       setTransactions((prev) =>
@@ -62,7 +62,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleEdit = (transaction: any) => {
+  const handleEdit = (transaction: Transaction) => {
     setEditingTransaction(transaction); // Устанавливаем редактируемую транзакцию
   };
 

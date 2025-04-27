@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { login as fetchLogin, logout as fetchLogout, isAuthenticated } from './fetchApi';
 
-export const AuthContext = createContext<any | undefined>(undefined);
+export const AuthContext = createContext<unknown | undefined>(undefined);
 
 interface AuthProviderProps {
   children?: React.ReactNode; // Добавьте тип для children
