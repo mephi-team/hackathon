@@ -2,6 +2,8 @@ package team.mephi.hackathon.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -22,10 +24,12 @@ import java.util.UUID;
 public class TransactionController {
 
     private final TransactionService service;
+    private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionResponseDto create(@Valid @RequestBody TransactionRequestDto dto) {
+        logger.debug("Received transaction: {}", dto);
         return service.createTransaction(dto);
     }
 
