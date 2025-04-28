@@ -1,71 +1,93 @@
 package team.mephi.hackathon.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.repository.TransactionRepository;
+import team.mephi.hackathon.controller.ReportService;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith(MockitoExtension.class)
 class ReportControllerTest {
-
-    @Autowired
-    private WebTestClient webTestClient;
-
-    @MockBean
-    private ReportService reportService;
-
-    @MockBean
+    @Mock
+    private ReportService reportServiceImpl;
+    @Mock
     private TransactionRepository transactionRepository;
 
-    @Test
-    void generatePdfReport_ShouldReturnPdf() throws java.io.IOException {
-        Mockito.when(transactionRepository.findAllActive()).thenReturn(List.of(new Transaction()));
-        Mockito.when(reportService.generatePdfReport(any())).thenReturn("%PDF-1.4".getBytes());
+    @Mock
+    private ReportService reportService;
 
-        webTestClient.get().uri("/api/reports/transactions/pdf")
+    private WebTestClient webTestClient;
+
+    @BeforeEach
+    void setup() {
+        ReportController controller = new ReportController(transactionRepository, reportService);
+        webTestClient = WebTestClient.bindToController(controller).build();
+    }
+
+    @Test
+    void generatePdfReport_shouldReturnPdfBytes_whenTransactionsExist() throws IOException {
+        Transaction tx = new Transaction();
+        when(transactionRepository.findAllActive()).thenReturn(List.of(tx));
+        byte[] expected = new byte[]{1, 2, 3};
+        when(reportService.generatePdfReport(any())).thenReturn(expected);
+
+        webTestClient.get()
+                .uri("/api/reports/transactions/pdf")
+                .accept(MediaType.APPLICATION_PDF)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_PDF)
-                .expectHeader().valueMatches("Content-Disposition", ".*transactions-report\\.pdf.*");
+                .expectHeader().valueEquals(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transactions-report.pdf")
+                .expectBody(byte[].class).isEqualTo(expected);
     }
 
     @Test
-    void generatePdfReport_NotFound() throws java.io.IOException {
-        Mockito.when(transactionRepository.findAllActive()).thenReturn(Collections.emptyList());
+    void generatePdfReport_shouldReturnServerError_whenNoTransactions() {
+        when(transactionRepository.findAllActive()).thenReturn(Collections.emptyList());
 
-        webTestClient.get().uri("/api/reports/transactions/pdf")
+        webTestClient.get()
+                .uri("/api/reports/transactions/pdf")
                 .exchange()
-                .expectStatus().isNotFound();
+                .expectStatus().is5xxServerError();
     }
 
     @Test
-    void generateExcelReport_ShouldReturnExcel() throws java.io.IOException {
-        Mockito.when(transactionRepository.findAllActive()).thenReturn(List.of(new Transaction()));
-        Mockito.when(reportService.generateExcelReport(any())).thenReturn(new byte[]{0x50, 0x4B});
+    void generateExcelReport_shouldReturnExcelBytes_whenTransactionsExist() throws IOException {
+        Transaction tx = new Transaction();
+        when(transactionRepository.findAllActive()).thenReturn(List.of(tx));
+        byte[] expected = new byte[]{4, 5, 6};
+        when(reportService.generateExcelReport(any())).thenReturn(expected);
 
-        webTestClient.get().uri("/api/reports/transactions/excel")
+        webTestClient.get()
+                .uri("/api/reports/transactions/excel")
+                .accept(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                .expectHeader().valueMatches("Content-Disposition", ".*transactions-report\\.xlsx.*");
+                .expectHeader().valueEquals(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transactions-report.xlsx")
+                .expectBody(byte[].class).isEqualTo(expected);
     }
 
     @Test
-    void generateExcelReport_NotFound() throws java.io.IOException {
-        Mockito.when(transactionRepository.findAllActive()).thenReturn(Collections.emptyList());
+    void generateExcelReport_shouldReturnServerError_whenNoTransactions() {
+        when(transactionRepository.findAllActive()).thenReturn(Collections.emptyList());
 
-        webTestClient.get().uri("/api/reports/transactions/excel")
+        webTestClient.get()
+                .uri("/api/reports/transactions/excel")
                 .exchange()
-                .expectStatus().isNotFound();
+                .expectStatus().is5xxServerError();
     }
 }

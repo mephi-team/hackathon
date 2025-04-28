@@ -7,12 +7,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
+import team.mephi.hackathon.entity.PersonType;
 import team.mephi.hackathon.entity.Transaction;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -25,17 +27,15 @@ class ReportServiceImplTest {
 
     @Test
     void generatePdfReport_withSingleTransaction_returnsValidPdf() throws IOException {
-        // Arrange
         Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
         transaction.setAmount(BigDecimal.valueOf(100.0));
         transaction.setComment("Test transaction");
+        transaction.setOperationDate(LocalDateTime.now());
         List<Transaction> transactions = List.of(transaction);
 
-        // Act
         byte[] pdfBytes = reportService.generatePdfReport(transactions);
 
-        // Assert
         assertNotNull(pdfBytes);
         assertTrue(pdfBytes.length > 0);
         assertTrue(new String(pdfBytes, StandardCharsets.US_ASCII).startsWith("%PDF"));
@@ -49,10 +49,8 @@ class ReportServiceImplTest {
 
     @Test
     void generatePdfReport_withEmptyList_returnsValidPdf() throws IOException {
-        // Act
         byte[] pdfBytes = reportService.generatePdfReport(Collections.emptyList());
 
-        // Assert
         assertNotNull(pdfBytes);
         assertTrue(pdfBytes.length > 0);
         assertTrue(new String(pdfBytes, StandardCharsets.US_ASCII).startsWith("%PDF"));
@@ -60,17 +58,15 @@ class ReportServiceImplTest {
 
     @Test
     void generateExcelReport_withSingleTransaction_returnsValidExcel() throws IOException {
-        // Arrange
         Transaction transaction = new Transaction();
-        transaction.setId(UUID.randomUUID());
+        transaction.setPersonType(PersonType.LEGAL);
         transaction.setAmount(BigDecimal.valueOf(100.0));
         transaction.setComment("Test transaction");
+        transaction.setOperationDate(LocalDateTime.now());
         List<Transaction> transactions = List.of(transaction);
 
-        // Act
         byte[] excelBytes = reportService.generateExcelReport(transactions);
 
-        // Assert
         assertNotNull(excelBytes);
         assertTrue(excelBytes.length > 0);
 
@@ -79,23 +75,29 @@ class ReportServiceImplTest {
             Row headerRow = sheet.getRow(0);
 
             assertEquals("ID", headerRow.getCell(0).getStringCellValue());
-            assertEquals("Amount", headerRow.getCell(1).getStringCellValue());
-            assertEquals("Currency", headerRow.getCell(2).getStringCellValue());
-            assertEquals("Description", headerRow.getCell(3).getStringCellValue());
+            assertEquals("Operation date", headerRow.getCell(1).getStringCellValue());
+            assertEquals("Transaction type", headerRow.getCell(2).getStringCellValue());
+            assertEquals("Comment", headerRow.getCell(3).getStringCellValue());
+            assertEquals("Amount", headerRow.getCell(4).getStringCellValue());
+            assertEquals("Status", headerRow.getCell(5).getStringCellValue());
+            assertEquals("Sender bank", headerRow.getCell(6).getStringCellValue());
+            assertEquals("Account", headerRow.getCell(7).getStringCellValue());
+            assertEquals("Receiver bank", headerRow.getCell(8).getStringCellValue());
+            assertEquals("Receiver inn", headerRow.getCell(9).getStringCellValue());
+            assertEquals("Receiver account", headerRow.getCell(10).getStringCellValue());
+            assertEquals("Category", headerRow.getCell(11).getStringCellValue());
+            assertEquals("Receiver phone", headerRow.getCell(12).getStringCellValue());
 
             Row dataRow = sheet.getRow(1);
-            assertEquals(transaction.getId().toString(), dataRow.getCell(0).getStringCellValue());
-            assertEquals(transaction.getAmount().toString(), dataRow.getCell(1).getStringCellValue());
-            assertEquals("Test transaction", dataRow.getCell(2).getStringCellValue());
+            assertEquals(transaction.getPersonType().toString(), dataRow.getCell(0).getStringCellValue());
+            assertEquals(transaction.getComment(), dataRow.getCell(3).getStringCellValue());
         }
     }
 
     @Test
     void generateExcelReport_withEmptyList_returnsValidExcel() throws IOException {
-        // Act
         byte[] excelBytes = reportService.generateExcelReport(Collections.emptyList());
 
-        // Assert
         assertNotNull(excelBytes);
         assertTrue(excelBytes.length > 0);
 
@@ -104,11 +106,20 @@ class ReportServiceImplTest {
             Row headerRow = sheet.getRow(0);
 
             assertEquals("ID", headerRow.getCell(0).getStringCellValue());
-            assertEquals("Amount", headerRow.getCell(1).getStringCellValue());
-            assertEquals("Currency", headerRow.getCell(2).getStringCellValue());
-            assertEquals("Description", headerRow.getCell(3).getStringCellValue());
+            assertEquals("Operation date", headerRow.getCell(1).getStringCellValue());
+            assertEquals("Transaction type", headerRow.getCell(2).getStringCellValue());
+            assertEquals("Comment", headerRow.getCell(3).getStringCellValue());
+            assertEquals("Amount", headerRow.getCell(4).getStringCellValue());
+            assertEquals("Status", headerRow.getCell(5).getStringCellValue());
+            assertEquals("Sender bank", headerRow.getCell(6).getStringCellValue());
+            assertEquals("Account", headerRow.getCell(7).getStringCellValue());
+            assertEquals("Receiver bank", headerRow.getCell(8).getStringCellValue());
+            assertEquals("Receiver inn", headerRow.getCell(9).getStringCellValue());
+            assertEquals("Receiver account", headerRow.getCell(10).getStringCellValue());
+            assertEquals("Category", headerRow.getCell(11).getStringCellValue());
+            assertEquals("Receiver phone", headerRow.getCell(12).getStringCellValue());
 
-            assertNull(sheet.getRow(1)); // Нет данных, только заголовок
+            assertNull(sheet.getRow(1)); // Только заголовки, данных нет
         }
     }
 }
