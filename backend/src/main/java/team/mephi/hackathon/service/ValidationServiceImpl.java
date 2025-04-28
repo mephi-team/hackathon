@@ -30,7 +30,7 @@ public class ValidationServiceImpl implements ValidationService {
         if (phone == null) return;
 
         if (!phone.matches("^(\\+7|8)\\d{10}$")) {
-            throw new ValidationException("Телефон должен быть в формате 7XXXXXXXXXX или 8XXXXXXXXXX");
+            throw new ValidationException("Телефон должен быть в формате +7XXXXXXXXXX или 8XXXXXXXXXX");
         }
     }
 }
