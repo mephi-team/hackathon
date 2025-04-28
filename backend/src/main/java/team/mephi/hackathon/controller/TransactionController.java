@@ -1,5 +1,7 @@
 package team.mephi.hackathon.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -58,6 +60,8 @@ public class TransactionController {
         return service.getTransaction(id);
     }
 
+    @Operation(summary = "Get all transactions", description = "Returns a list of all transactions")
+    @ApiResponse(responseCode = "200", description = "Successful operation")
     @GetMapping
     public List<TransactionResponseDto> search(@Valid TransactionFilterDto filter) {
         return service.searchTransactions(filter);

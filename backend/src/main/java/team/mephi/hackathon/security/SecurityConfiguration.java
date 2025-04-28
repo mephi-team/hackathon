@@ -46,7 +46,8 @@ public class SecurityConfiguration {
             http
                     .cors(Customizer.withDefaults())
                     .authorizeExchange((authorize) -> authorize
-                            .anyExchange().access(hasAuthority(userRole))
+                            .pathMatchers("/api/**").access(hasAuthority(userRole))
+                            .anyExchange().permitAll()
                     )
                     .oauth2ResourceServer(resourceServer -> resourceServer
                             .jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor()))
