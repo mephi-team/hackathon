@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.repository.TransactionRepository;
-import team.mephi.hackathon.controller.ReportService;
+
 
 import java.io.IOException;
 import java.util.Collections;
@@ -21,8 +21,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ReportControllerTest {
-    @Mock
-    private ReportService reportServiceImpl;
+
     @Mock
     private TransactionRepository transactionRepository;
 
