@@ -25,8 +25,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -64,13 +65,20 @@ class TransactionServiceImplTest {
 
         existingTransaction = new Transaction();
         existingTransaction.setId(UUID.randomUUID());
+        existingTransaction.setEntityType("TEST");
         existingTransaction.setPersonType(PersonType.LEGAL);
+        existingTransaction.setOperationDate(LocalDateTime.now());
         existingTransaction.setTransactionType(TransactionType.INCOME);
-        existingTransaction.setStatus(TransactionStatus.COMPLETED);
         existingTransaction.setAmount(BigDecimal.valueOf(1000));
+        existingTransaction.setStatus(TransactionStatus.COMPLETED);
         existingTransaction.setComment("Old comment");
-        existingTransaction.setReceiverBank("OldBank");
+        existingTransaction.setSenderBank("OldBank");
+        existingTransaction.setAccount("OldAcc");
+        existingTransaction.setReceiverBank("OldReceiver");
+        existingTransaction.setReceiverAccount("OldRecAcc");
+        existingTransaction.setReceiverInn("0000000000");
         existingTransaction.setCategory("OldCategory");
+        existingTransaction.setReceiverPhone("80000000000");
     }
 
     @Test
@@ -87,7 +95,8 @@ class TransactionServiceImplTest {
 
     @Test
     void getTransaction_ShouldReturnTransaction_WhenFound() {
-        when(transactionRepository.findById(existingTransaction.getId())).thenReturn(Optional.of(existingTransaction));
+        when(transactionRepository.findById(existingTransaction.getId()))
+                .thenReturn(Optional.of(existingTransaction));
 
         TransactionResponseDto response = transactionService.getTransaction(existingTransaction.getId());
 
@@ -107,7 +116,8 @@ class TransactionServiceImplTest {
 
     @Test
     void updateTransaction_ShouldValidateAndSave() {
-        when(transactionRepository.findById(existingTransaction.getId())).thenReturn(Optional.of(existingTransaction));
+        when(transactionRepository.findById(existingTransaction.getId()))
+                .thenReturn(Optional.of(existingTransaction));
         when(transactionRepository.save(any(Transaction.class))).thenReturn(existingTransaction);
 
         TransactionResponseDto response = transactionService.updateTransaction(existingTransaction.getId(), fullDto);
@@ -118,15 +128,6 @@ class TransactionServiceImplTest {
         assertThat(response.getId()).isEqualTo(existingTransaction.getId());
     }
 
-    @Test
-    void deleteTransaction_ShouldSetDeletedTrue() {
-        when(transactionRepository.findById(existingTransaction.getId())).thenReturn(Optional.of(existingTransaction));
-
-        transactionService.deleteTransaction(existingTransaction.getId());
-
-        assertThat(existingTransaction.isDeleted()).isTrue();
-        verify(transactionRepository).save(existingTransaction);
-    }
 
     @Test
     void searchTransactions_withFilter_returnsTransactions() {
@@ -142,8 +143,8 @@ class TransactionServiceImplTest {
 
         var result = transactionService.searchTransactions(filter);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
@@ -193,12 +194,13 @@ class TransactionServiceImplTest {
 
         ValidationException ex = assertThrows(ValidationException.class, () ->
                 transactionService.createTransaction(invalidDto));
-        assertEquals("ИНН должен содержать только цифры", ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo("ИНН должен содержать только цифры");
     }
 
     @Test
     void updateTransaction_shouldReplaceAllFieldsCorrectly() {
-        when(transactionRepository.findById(existingTransaction.getId())).thenReturn(Optional.of(existingTransaction));
+        when(transactionRepository.findById(existingTransaction.getId()))
+                .thenReturn(Optional.of(existingTransaction));
         when(transactionRepository.save(any(Transaction.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         fullDto.setComment(null);
@@ -212,5 +214,180 @@ class TransactionServiceImplTest {
         assertThat(updated.getReceiverBank()).isEqualTo("NewBank");
         assertThat(updated.getCategory()).isNull();
         assertThat(updated.getAmount()).isEqualTo(BigDecimal.valueOf(2000));
+    }
+
+    @Test
+    void updateTransaction_forbiddenStatus_shouldThrow_onCompleted() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.COMPLETED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("COMPLETED");
+    }
+
+    @Test
+    void updateTransaction_forbiddenStatusConfirmed_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.CONFIRMED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CONFIRMED");
+    }
+
+    @Test
+    void updateTransaction_forbiddenStatusInProgress_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.IN_PROGRESS);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("IN_PROGRESS");
+    }
+
+    @Test
+    void updateTransaction_forbiddenStatusCanceled_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.CANCELED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CANCELED");
+    }
+
+    @Test
+    void updateTransaction_forbiddenStatusDeleted_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.DELETED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("DELETED");
+    }
+
+    @Test
+    void updateTransaction_forbiddenStatusRefund_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.REFUND);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("REFUND");
+    }
+
+    // === Forbidden Status Tests for Delete ===
+    @Test
+    void deleteTransaction_forbiddenStatusInProgress_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.IN_PROGRESS);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("IN_PROGRESS");
+    }
+
+    @Test
+    void deleteTransaction_forbiddenStatusCanceled_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.CANCELED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CANCELED");
+    }
+
+    @Test
+    void deleteTransaction_forbiddenStatusCompleted_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.COMPLETED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("COMPLETED");
+    }
+
+    @Test
+    void deleteTransaction_forbiddenStatusRefund_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.REFUND);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("REFUND");
+    }
+
+    @Test
+    void deleteTransaction_allowedStatus_shouldMarkPaymentDeleted() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.NEW);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+        when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        transactionService.deleteTransaction(id);
+
+        assertThat(existingTransaction.getStatus())
+                .isEqualTo(TransactionStatus.DELETED);
+        verify(transactionRepository).save(existingTransaction);
+    }
+
+    @Test
+    void updateTransaction_allEditableFields_shouldReplaceCorrectly() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.NEW);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+        when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        TransactionRequestDto dto = new TransactionRequestDto();
+        dto.setPersonType("PHYSICAL");
+        LocalDateTime newDate = LocalDateTime.now().minusDays(1);
+        dto.setOperationDate(newDate);
+        dto.setTransactionType("OUTCOME");
+        dto.setComment("Updated comment");
+        dto.setAmount(BigDecimal.valueOf(999.99));
+        dto.setStatus("IN_PROGRESS");
+        dto.setSenderBank("NewSender");
+        dto.setAccount("NewAccount");
+        dto.setReceiverBank("NewReceiver");
+        dto.setReceiverAccount("NewRecAcc");
+        dto.setReceiverInn("0987654321");
+        dto.setCategory("NewCat");
+        dto.setReceiverPhone("81230000000");
+
+        TransactionResponseDto response = transactionService.updateTransaction(id, dto);
+
+        assertThat(response.getPersonType()).isEqualTo("PHYSICAL");
+        assertThat(response.getOperationDate()).isEqualTo(newDate);
+        assertThat(response.getTransactionType()).isEqualTo("OUTCOME");
+        assertThat(response.getComment()).isEqualTo("Updated comment");
+        assertThat(response.getAmount()).isEqualTo(BigDecimal.valueOf(999.99));
+        assertThat(response.getStatus()).isEqualTo("IN_PROGRESS");
+        assertThat(response.getSenderBank()).isEqualTo("NewSender");
+        assertThat(response.getAccount()).isEqualTo("NewAccount");
+        assertThat(response.getReceiverBank()).isEqualTo("NewReceiver");
+        assertThat(response.getReceiverAccount()).isEqualTo("NewRecAcc");
+        assertThat(response.getReceiverInn()).isEqualTo("0987654321");
+        assertThat(response.getCategory()).isEqualTo("NewCat");
+        assertThat(response.getReceiverPhone()).isEqualTo("81230000000");
     }
 }
