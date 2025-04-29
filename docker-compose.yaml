@@ -57,6 +57,7 @@ services:
       APP_HTTP_CORS_HEADERS: authorization,content-type
       APP_HTTP_CORS_METHODS: GET,POST,PUT,DELETE
       APP_HTTP_CORS_ORIGINS: http://localhost:3000
+      APP_API_DOCS: true
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWK_SET_URI: http://keycloak:8080/realms/hackathon-realm/protocol/openid-connect/certs
     ports:
       - "8000:8000"
