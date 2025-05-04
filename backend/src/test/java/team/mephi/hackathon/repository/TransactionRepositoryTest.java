@@ -114,11 +114,11 @@ class TransactionRepositoryTest {
         assertThat(byDate).containsExactly(t1);
 
         // По типу
-        List<Transaction> byType = repository.findAllByFilter(null, null, "INCOME", null, null);
+        List<Transaction> byType = repository.findAllByFilter(null, null, TransactionType.INCOME, null, null);
         assertThat(byType).containsExactly(t1);
 
         // По статусу
-        List<Transaction> byStatus = repository.findAllByFilter(null, null, null, "NEW", null);
+        List<Transaction> byStatus = repository.findAllByFilter(null, null, null, TransactionStatus.NEW, null);
         assertThat(byStatus).containsExactly(t2);
 
         // По категории
@@ -142,11 +142,11 @@ class TransactionRepositoryTest {
         em.flush();
 
         // Только по типу
-        List<Transaction> onlyIncome = repository.findAllByFilter(null, null, "INCOME", null, null);
+        List<Transaction> onlyIncome = repository.findAllByFilter(null, null, TransactionType.INCOME, null, null);
         assertThat(onlyIncome).containsExactly(inc);
 
         // Только по статусу
-        List<Transaction> onlyNew = repository.findAllByFilter(null, null, null, "NEW", null);
+        List<Transaction> onlyNew = repository.findAllByFilter(null, null, null, TransactionStatus.NEW, null);
         assertThat(onlyNew).containsExactlyInAnyOrder(inc, out);
 
         // Без фильтров – все транзакции

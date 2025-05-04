@@ -132,8 +132,8 @@ class TransactionServiceImplTest {
     @Test
     void searchTransactions_withFilter_returnsTransactions() {
         TransactionFilterDto filter = new TransactionFilterDto();
-        filter.setStartDate(LocalDateTime.now().minusDays(5));
-        filter.setEndDate(LocalDateTime.now());
+        filter.setDateFrom(LocalDateTime.now().minusDays(5));
+        filter.setDateTo(LocalDateTime.now());
         filter.setTransactionType("INCOME");
         filter.setStatus("COMPLETED");
         filter.setCategory("SALARY");
