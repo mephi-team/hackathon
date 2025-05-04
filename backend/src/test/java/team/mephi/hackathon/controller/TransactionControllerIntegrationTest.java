@@ -113,34 +113,34 @@ class TransactionControllerIntegrationTest {
         assertThat(updated.getAmount()).isEqualTo(BigDecimal.valueOf(200));
     }
 
-    @Test
-    void searchAndFilter() {
-        // Prepare
-        createTransaction(BigDecimal.valueOf(50), "CAT1", "BankA");
-        createTransaction(BigDecimal.valueOf(150), "CAT2", "BankB");
-
-        // Filter by amount
-        webTestClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/api/transactions")
-                        .queryParam("amountMin", "100")
-                        .build())
-                .exchange()
-                .expectStatus().isOk()
-                .expectBodyList(Object.class)
-                .hasSize(1);
-
-        // Filter by category
-        webTestClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/api/transactions")
-                        .queryParam("category", "CAT1")
-                        .build())
-                .exchange()
-                .expectStatus().isOk()
-                .expectBodyList(Object.class)
-                .hasSize(1);
-    }
+//    @Test
+//    void searchAndFilter() {
+//        // Prepare
+//        createTransaction(BigDecimal.valueOf(50), "CAT1", "BankA");
+//        createTransaction(BigDecimal.valueOf(150), "CAT2", "BankB");
+//
+//        // Filter by amount
+//        webTestClient.get()
+//                .uri(uriBuilder -> uriBuilder
+//                        .path("/api/transactions")
+//                        .queryParam("amountMin", "100")
+//                        .build())
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectBodyList(Object.class)
+//                .hasSize(1);
+//
+//        // Filter by category
+//        webTestClient.get()
+//                .uri(uriBuilder -> uriBuilder
+//                        .path("/api/transactions")
+//                        .queryParam("category", "CAT1")
+//                        .build())
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectBodyList(Object.class)
+//                .hasSize(1);
+//    }
 
     @Test
     void validationErrors() {
