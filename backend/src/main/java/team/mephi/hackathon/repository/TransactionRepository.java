@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import team.mephi.hackathon.entity.Transaction;
-import team.mephi.hackathon.entity.TransactionType;
-import team.mephi.hackathon.entity.TransactionStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,19 +16,19 @@ import java.util.UUID;
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 
     @Query("""
-    SELECT t FROM Transaction t
-    WHERE (:dateFrom IS NULL OR CAST(:dateFrom AS timestamp) <= t.operationDate)
-      AND (:dateTo IS NULL OR CAST(:dateTo AS timestamp) >= t.operationDate)
-      AND (:transactionType IS NULL OR :transactionType = t.transactionType)
-      AND (:status IS NULL OR :status = t.status)
-      AND (:category IS NULL OR :category = t.category)
-      AND t.deleted = false
+        SELECT t FROM Transaction t
+        WHERE (:dateFrom IS NULL OR :dateFrom <= t.operationDate)
+            AND (:dateTo IS NULL OR :dateTo >= t.operationDate)
+            AND (:transactionType IS NULL OR :transactionType = t.transactionType)
+            AND (:status IS NULL OR :status = t.status)
+            AND (:category IS NULL OR :category = t.category)
+            AND t.deleted = false
     """)
     List<Transaction> findAllByFilter(
             @Param("dateFrom") LocalDateTime dateFrom,
             @Param("dateTo") LocalDateTime dateTo,
-            @Param("transactionType") TransactionType transactionType,
-            @Param("status") TransactionStatus status,
+            @Param("transactionType") team.mephi.hackathon.entity.TransactionType transactionType,
+            @Param("status") team.mephi.hackathon.entity.TransactionStatus status,
             @Param("category") String category
     );
 
