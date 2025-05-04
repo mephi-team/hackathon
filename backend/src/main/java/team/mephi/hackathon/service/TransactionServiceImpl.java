@@ -58,6 +58,12 @@ public class TransactionServiceImpl implements TransactionService {
         if (filter.getCategory() != null)
             spec = spec.and((root, q, cb) -> cb.equal(root.get("category"), filter.getCategory()));
 
+        if (filter.getAmountMin() != null)
+            spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("amount"), filter.getAmountMin()));
+
+        if (filter.getAmountMax() != null)
+            spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("amount"), filter.getAmountMax()));
+
         // Фильтрация только по не удалённым
         spec = spec.and((root, q, cb) -> cb.isFalse(root.get("deleted")));
 
