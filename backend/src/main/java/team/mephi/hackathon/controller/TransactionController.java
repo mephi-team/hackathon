@@ -6,14 +6,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import team.mephi.hackathon.dto.TransactionFilterDto;
 import team.mephi.hackathon.dto.TransactionRequestDto;
 import team.mephi.hackathon.dto.TransactionResponseDto;
-import team.mephi.hackathon.entity.Transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,36 +33,25 @@ public class TransactionController {
         return service.createTransaction(dto);
     }
 
-    @GetMapping("/transactions")
-    public List<Transaction> getTransactions(
+    @Operation(summary = "Get all transactions", description = "Returns a list of all transactions")
+    @ApiResponse(responseCode = "200", description = "Successful operation")
+    @GetMapping
+    public List<TransactionResponseDto> search(
             @RequestParam(required = false) String senderBank,
             @RequestParam(required = false) String receiverBank,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
             @RequestParam(required = false) BigDecimal amountMin,
             @RequestParam(required = false) BigDecimal amountMax,
-            @RequestParam(required = false) String category) {
-
-        Specification<Transaction> specification = Specification
-                .where(team.mephi.hackathon.specification.TransactionSpecification.hasSenderBank(senderBank))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasReceiverBank(receiverBank))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasDateBetween(dateFrom, dateTo))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasAmountBetween(amountMin, amountMax))
-                .and(team.mephi.hackathon.specification.TransactionSpecification.hasCategory(category));
-
-        return service.getTransactions(specification);
+            @RequestParam(required = false) String category
+    ) {
+        TransactionFilterDto filter = new TransactionFilterDto(senderBank, receiverBank, dateFrom, dateTo, amountMin, amountMax, category);
+        return service.searchTransactions(filter);
     }
 
     @GetMapping("/{id}")
     public TransactionResponseDto getById(@PathVariable UUID id) {
         return service.getTransaction(id);
-    }
-
-    @Operation(summary = "Get all transactions", description = "Returns a list of all transactions")
-    @ApiResponse(responseCode = "200", description = "Successful operation")
-    @GetMapping
-    public List<TransactionResponseDto> search(@Valid TransactionFilterDto filter) {
-        return service.searchTransactions(filter);
     }
 
     @PutMapping("/{id}")
