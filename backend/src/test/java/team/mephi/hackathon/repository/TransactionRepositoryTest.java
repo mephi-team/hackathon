@@ -127,7 +127,7 @@ class TransactionRepositoryTest {
 
         // Совмещённый фильтр
         List<Transaction> combined = repository.findAllByFilter(
-                now.minusDays(2), now, "INCOME", "COMPLETED", "SALARY"
+                now.minusDays(2), now, TransactionType.INCOME, TransactionStatus.COMPLETED, "SALARY"
         );
         assertThat(combined).containsExactly(t1);
     }

@@ -122,7 +122,7 @@ class TransactionControllerIntegrationTest {
         // Filter by amount
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/api/transactions/transactions")
+                        .path("/api/transactions")
                         .queryParam("amountMin", "100")
                         .build())
                 .exchange()
@@ -133,7 +133,7 @@ class TransactionControllerIntegrationTest {
         // Filter by category
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/api/transactions/transactions")
+                        .path("/api/transactions")
                         .queryParam("category", "CAT1")
                         .build())
                 .exchange()
@@ -158,7 +158,7 @@ class TransactionControllerIntegrationTest {
 
         // Invalid date format
         webTestClient.get()
-                .uri("/api/transactions/transactions?dateFrom=invalid")
+                .uri("/api/transactions?dateFrom=invalid")
                 .exchange()
                 .expectStatus().isBadRequest();
     }
