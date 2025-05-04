@@ -138,8 +138,7 @@ class TransactionServiceImplTest {
         filter.setStatus("COMPLETED");
         filter.setCategory("SALARY");
 
-        when(transactionRepository.findAllByFilter(any(), any(), any(), any(), any()))
-                .thenReturn(List.of(existingTransaction));
+        when(transactionRepository.findAll(any())).thenReturn(List.of(existingTransaction));
 
         var result = transactionService.searchTransactions(filter);
 
