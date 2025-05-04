@@ -153,7 +153,7 @@ class TransactionControllerUnitTest {
         LocalDateTime now = LocalDateTime.now();
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/api/transactions/transactions")
+                        .path("/api/transactions")
                         .queryParam("senderBank", "SB")
                         .queryParam("receiverBank", "RB")
                         .queryParam("dateFrom", now.minusDays(1).toString())
