@@ -145,10 +145,10 @@ class TransactionControllerUnitTest {
 
     @Test
     void getTransactions_withParams_shouldReturnList() {
-        Transaction tx = new Transaction();
+        TransactionResponseDto dto = new TransactionResponseDto();
         UUID id = UUID.randomUUID();
-        tx.setId(id);
-        when(transactionService.getTransactions(any())).thenReturn(List.of(tx));
+        dto.setId(id);
+        when(transactionService.searchTransactions(any())).thenReturn(List.of(dto));
 
         LocalDateTime now = LocalDateTime.now();
         webTestClient.get()
@@ -164,24 +164,24 @@ class TransactionControllerUnitTest {
                         .build())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(Transaction.class)
+                .expectBodyList(TransactionResponseDto.class) // поменяйте на TransactionResponseDto!
                 .hasSize(1)
                 .value(list -> assertEquals(id, list.get(0).getId()));
 
-        verify(transactionService).getTransactions(any());
+        verify(transactionService).searchTransactions(any());
     }
 
     @Test
     void getTransactions_noParams_shouldReturnEmptyList() {
-        when(transactionService.getTransactions(any())).thenReturn(List.of());
+        when(transactionService.searchTransactions(any())).thenReturn(List.of());
 
         webTestClient.get()
                 .uri("/api/transactions")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(Transaction.class)
+                .expectBodyList(TransactionResponseDto.class) // поменяйте на TransactionResponseDto!
                 .hasSize(0);
 
-        verify(transactionService).getTransactions(any());
+        verify(transactionService).searchTransactions(any());
     }
 }
