@@ -176,7 +176,7 @@ class TransactionControllerUnitTest {
         when(transactionService.getTransactions(any())).thenReturn(List.of());
 
         webTestClient.get()
-                .uri("/api/transactions/transactions")
+                .uri("/api/transactions")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(Transaction.class)
