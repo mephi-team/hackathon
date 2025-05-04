@@ -1,6 +1,5 @@
 package team.mephi.hackathon.repository;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -16,8 +15,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID>,
 
     @Query("SELECT t FROM Transaction t WHERE t.deleted = false")
     List<Transaction> findAllActive();
-
-    List<Transaction> findAll(Specification<Transaction> specification);
 
     Optional<Transaction> findById(UUID id);
 }
