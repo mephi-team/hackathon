@@ -39,21 +39,30 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public List<TransactionResponseDto> searchTransactions(TransactionFilterDto filter) {
-        TransactionType transactionType = null;
-        if (filter.getTransactionType() != null) {
-            transactionType = TransactionType.valueOf(filter.getTransactionType());
-        }
-        TransactionStatus status = null;
-        if (filter.getStatus() != null) {
-            status = TransactionStatus.valueOf(filter.getStatus());
-        }
-        return repository.findAllByFilter(
-                        filter.getDateFrom(),
-                        filter.getDateTo(),
-                        transactionType,
-                        status,
-                        filter.getCategory()
-                ).stream()
+        Specification<Transaction> spec = Specification.where(null);
+
+        if (filter.getDateFrom() != null)
+            spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("operationDate"), filter.getDateFrom()));
+
+        if (filter.getDateTo() != null)
+            spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("operationDate"), filter.getDateTo()));
+
+        if (filter.getTransactionType() != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("transactionType"),
+                    TransactionType.valueOf(filter.getTransactionType())));
+
+        if (filter.getStatus() != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("status"),
+                    TransactionStatus.valueOf(filter.getStatus())));
+
+        if (filter.getCategory() != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("category"), filter.getCategory()));
+
+        // Фильтрация только по не удалённым
+        spec = spec.and((root, q, cb) -> cb.isFalse(root.get("deleted")));
+
+        return repository.findAll(spec)
+                .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
