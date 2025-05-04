@@ -1,4 +1,4 @@
-# hackathon
+# hackathon ![CI Status](https://github.com/mephi-team/hackathon/workflows/CI%20Pipeline/badge.svg)
 
 Запуск системы:
 ```bash

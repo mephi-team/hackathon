@@ -1,13 +1,22 @@
 package team.mephi.hackathon.dto;
 
-import lombok.Data;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransactionFilterDto {
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String senderBank;
+    private String receiverBank;
+    private String category;
     private String transactionType;
     private String status;
-    private String category;
+    private LocalDateTime dateFrom;
+    private LocalDateTime dateTo;
+    private BigDecimal amountMin;
+    private BigDecimal amountMax;
 }

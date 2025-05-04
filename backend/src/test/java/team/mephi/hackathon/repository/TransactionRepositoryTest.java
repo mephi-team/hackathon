@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -77,11 +78,35 @@ class TransactionRepositoryTest {
         em.flush();
     }
 
+    // Утилита для построения спецификации
+    private Specification<Transaction> filterSpec(
+            LocalDateTime dateFrom,
+            LocalDateTime dateTo,
+            TransactionType type,
+            TransactionStatus status,
+            String category
+    ) {
+        Specification<Transaction> spec = Specification.where(null);
+        if (dateFrom != null)
+            spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("operationDate"), dateFrom));
+        if (dateTo != null)
+            spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("operationDate"), dateTo));
+        if (type != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("transactionType"), type));
+        if (status != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("status"), status));
+        if (category != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("category"), category));
+        // Только не удалённые
+        spec = spec.and((root, q, cb) -> cb.isFalse(root.get("deleted")));
+        return spec;
+    }
+
     @Test
-    @DisplayName("Пустая БД: findAllActive() и findAllByFilter(...) возвращают пустой список")
+    @DisplayName("Пустая БД: findAllActive() и findAll(spec) возвращают пустой список")
     void whenEmptyDatabase_thenReturnsEmpty() {
         assertThat(repository.findAllActive()).isEmpty();
-        assertThat(repository.findAllByFilter(null, null, null, null, null)).isEmpty();
+        assertThat(repository.findAll(filterSpec(null, null, null, null, null))).isEmpty();
     }
 
     @Test
@@ -110,24 +135,24 @@ class TransactionRepositoryTest {
         em.flush();
 
         // По диапазону дат (только t1)
-        List<Transaction> byDate = repository.findAllByFilter(now.minusDays(2), now, null, null, null);
+        List<Transaction> byDate = repository.findAll(filterSpec(now.minusDays(2), now, null, null, null));
         assertThat(byDate).containsExactly(t1);
 
         // По типу
-        List<Transaction> byType = repository.findAllByFilter(null, null, "INCOME", null, null);
+        List<Transaction> byType = repository.findAll(filterSpec(null, null, TransactionType.INCOME, null, null));
         assertThat(byType).containsExactly(t1);
 
         // По статусу
-        List<Transaction> byStatus = repository.findAllByFilter(null, null, null, "NEW", null);
+        List<Transaction> byStatus = repository.findAll(filterSpec(null, null, null, TransactionStatus.NEW, null));
         assertThat(byStatus).containsExactly(t2);
 
         // По категории
-        List<Transaction> byCategory = repository.findAllByFilter(null, null, null, null, "SALARY");
+        List<Transaction> byCategory = repository.findAll(filterSpec(null, null, null, null, "SALARY"));
         assertThat(byCategory).containsExactly(t1);
 
         // Совмещённый фильтр
-        List<Transaction> combined = repository.findAllByFilter(
-                now.minusDays(2), now, "INCOME", "COMPLETED", "SALARY"
+        List<Transaction> combined = repository.findAll(
+                filterSpec(now.minusDays(2), now, TransactionType.INCOME, TransactionStatus.COMPLETED, "SALARY")
         );
         assertThat(combined).containsExactly(t1);
     }
@@ -142,15 +167,15 @@ class TransactionRepositoryTest {
         em.flush();
 
         // Только по типу
-        List<Transaction> onlyIncome = repository.findAllByFilter(null, null, "INCOME", null, null);
+        List<Transaction> onlyIncome = repository.findAll(filterSpec(null, null, TransactionType.INCOME, null, null));
         assertThat(onlyIncome).containsExactly(inc);
 
         // Только по статусу
-        List<Transaction> onlyNew = repository.findAllByFilter(null, null, null, "NEW", null);
+        List<Transaction> onlyNew = repository.findAll(filterSpec(null, null, null, TransactionStatus.NEW, null));
         assertThat(onlyNew).containsExactlyInAnyOrder(inc, out);
 
         // Без фильтров – все транзакции
-        List<Transaction> all = repository.findAllByFilter(null, null, null, null, null);
+        List<Transaction> all = repository.findAll(filterSpec(null, null, null, null, null));
         assertThat(all).containsExactlyInAnyOrder(inc, out);
     }
 }
