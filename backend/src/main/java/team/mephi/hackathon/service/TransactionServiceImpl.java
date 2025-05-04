@@ -39,8 +39,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public List<TransactionResponseDto> searchTransactions(TransactionFilterDto filter) {
-        return repository.findAllByFilter(filter.getStartDate(), filter.getEndDate(),
-                        filter.getTransactionType(), filter.getStatus(), filter.getCategory()).stream()
+        return repository.findAllByFilter(
+                        filter.getDateFrom(),
+                        filter.getDateTo(),
+                        filter.getTransactionType(),
+                        filter.getStatus(),
+                        filter.getCategory()
+                ).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }

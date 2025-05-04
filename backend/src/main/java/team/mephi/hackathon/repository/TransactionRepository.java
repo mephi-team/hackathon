@@ -16,20 +16,21 @@ import java.util.UUID;
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 
     @Query("""
-                SELECT t FROM Transaction t
-                WHERE (COALESCE(:startDate, t.operationDate) <= t.operationDate)
-                  AND (COALESCE(:endDate, t.operationDate) >= t.operationDate)
-                  AND (COALESCE(:transactionType, t.transactionType) = t.transactionType)
-                  AND (COALESCE(:status, t.status) = t.status)
-                  AND (COALESCE(:category, t.category) = t.category)
-                  AND t.deleted = false
-    """)
+            SELECT t FROM Transaction t
+            WHERE (:dateFrom IS NULL OR :dateFrom <= t.operationDate)
+              AND (:dateTo IS NULL OR :dateTo >= t.operationDate)
+              AND (:transactionType IS NULL OR :transactionType = t.transactionType)
+              AND (:status IS NULL OR :status = t.status)
+              AND (:category IS NULL OR :category = t.category)
+              AND t.deleted = false
+""")
     List<Transaction> findAllByFilter(
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            String transactionType,
-            String status,
-            String category);
+            @Param("dateFrom") LocalDateTime dateFrom,
+            @Param("dateTo") LocalDateTime dateTo,
+            @Param("transactionType") String transactionType,
+            @Param("status") String status,
+            @Param("category") String category
+    );
 
     @Query("SELECT t FROM Transaction t WHERE " +
             "t.deleted = false")
