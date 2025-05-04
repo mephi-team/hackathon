@@ -17,8 +17,6 @@ public class TransactionFilterDto {
     private String status;
     private LocalDateTime dateFrom;
     private LocalDateTime dateTo;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
     private BigDecimal amountMin;
     private BigDecimal amountMax;
 }
