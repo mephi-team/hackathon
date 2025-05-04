@@ -12,9 +12,13 @@ import lombok.NoArgsConstructor;
 public class TransactionFilterDto {
     private String senderBank;
     private String receiverBank;
+    private String category;
+    private String transactionType;
+    private String status;
     private LocalDateTime dateFrom;
     private LocalDateTime dateTo;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private BigDecimal amountMin;
     private BigDecimal amountMax;
-    private String category;
 }
