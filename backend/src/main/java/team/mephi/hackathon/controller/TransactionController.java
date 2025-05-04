@@ -45,7 +45,14 @@ public class TransactionController {
             @RequestParam(required = false) BigDecimal amountMax,
             @RequestParam(required = false) String category
     ) {
-        TransactionFilterDto filter = new TransactionFilterDto(senderBank, receiverBank, dateFrom, dateTo, amountMin, amountMax, category);
+        TransactionFilterDto filter = new TransactionFilterDto();
+        filter.setSenderBank(senderBank);
+        filter.setReceiverBank(receiverBank);
+        filter.setDateFrom(dateFrom);
+        filter.setDateTo(dateTo);
+        filter.setAmountMin(amountMin);
+        filter.setAmountMax(amountMax);
+        filter.setCategory(category);
         return service.searchTransactions(filter);
     }
 
