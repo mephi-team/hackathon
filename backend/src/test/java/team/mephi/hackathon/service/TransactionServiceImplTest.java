@@ -70,7 +70,7 @@ class TransactionServiceImplTest {
         existingTransaction.setOperationDate(LocalDateTime.now());
         existingTransaction.setTransactionType(TransactionType.INCOME);
         existingTransaction.setAmount(BigDecimal.valueOf(1000));
-        existingTransaction.setStatus(TransactionStatus.COMPLETED);
+        existingTransaction.setStatus(TransactionStatus.NEW);
         existingTransaction.setComment("Old comment");
         existingTransaction.setSenderBank("OldBank");
         existingTransaction.setAccount("OldAcc");
@@ -215,17 +215,17 @@ class TransactionServiceImplTest {
         assertThat(updated.getAmount()).isEqualTo(BigDecimal.valueOf(2000));
     }
 
-//    @Test
-//    void updateTransaction_forbiddenStatus_shouldThrow_onCompleted() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.COMPLETED);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.updateTransaction(id, fullDto)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("COMPLETED");
-//    }
+    @Test
+    void updateTransaction_forbiddenStatus_shouldThrow_onCompleted() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.COMPLETED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("COMPLETED");
+    }
 
 //    @Test
 //    void updateTransaction_forbiddenStatusConfirmed_shouldThrow() {

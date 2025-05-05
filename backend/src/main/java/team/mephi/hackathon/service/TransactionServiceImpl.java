@@ -11,6 +11,7 @@ import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.entity.TransactionStatus;
 import team.mephi.hackathon.entity.TransactionType;
 import team.mephi.hackathon.exceptions.TransactionNotFoundException;
+import team.mephi.hackathon.exceptions.ValidationException;
 import team.mephi.hackathon.repository.TransactionRepository;
 
 import java.util.List;
@@ -76,6 +77,10 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponseDto updateTransaction(UUID id, TransactionRequestDto dto) {
         Transaction entity = repository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException(id.toString()));
+
+        if (entity.getStatus() == TransactionStatus.COMPLETED) {
+            throw new ValidationException("Cannot update COMPLETED transaction");
+        }
 
         validationService.validateTransaction(dto);
         updateEntity(entity, dto);
