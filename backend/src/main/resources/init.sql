@@ -15,3 +15,8 @@ CREATE TABLE IF NOT EXISTS transactions (
     category TEXT,
     receiver_phone VARCHAR(20)
     );
+
+CREATE TABLE IF NOT EXISTS categories (
+    id UUID PRIMARY KEY,
+    name VARCHAR(200)
+    );
