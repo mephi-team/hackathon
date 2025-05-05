@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 import team.mephi.hackathon.controller.ValidationService;
 import team.mephi.hackathon.dto.TransactionFilterDto;
 import team.mephi.hackathon.dto.TransactionRequestDto;
@@ -129,22 +130,22 @@ class TransactionServiceImplTest {
     }
 
 
-//    @Test
-//    void searchTransactions_withFilter_returnsTransactions() {
-//        TransactionFilterDto filter = new TransactionFilterDto();
-//        filter.setDateFrom(LocalDateTime.now().minusDays(5));
-//        filter.setDateTo(LocalDateTime.now());
-//        filter.setTransactionType("INCOME");
-//        filter.setStatus("COMPLETED");
-//        filter.setCategory("SALARY");
-//
-//        when(transactionRepository.findAll(any())).thenReturn(List.of(existingTransaction));
-//
-//        var result = transactionService.searchTransactions(filter);
-//
-//        assertThat(result).isNotNull();
-//        assertThat(result.size()).isEqualTo(1);
-//    }
+    @Test
+    void searchTransactions_withFilter_returnsTransactions() {
+        TransactionFilterDto filter = new TransactionFilterDto();
+        filter.setDateFrom(LocalDateTime.now().minusDays(5));
+        filter.setDateTo(LocalDateTime.now());
+        filter.setTransactionType("INCOME");
+        filter.setStatus("COMPLETED");
+        filter.setCategory("SALARY");
+
+        when(transactionRepository.findAll(any(Specification.class))).thenReturn(List.of(existingTransaction));
+
+        var result = transactionService.searchTransactions(filter);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+    }
 
     @Test
     void mapToEntity_and_mapToDto_fullFields() {
