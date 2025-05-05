@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(WebExchangeBindException.class)  // Используем WebFlux исключение
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Mono<Map<String, String>> handleValidationException(WebExchangeBindException ex) {
+    public Mono<Map<String, String>> handleWebExchangeBindException(WebExchangeBindException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = error instanceof FieldError
@@ -34,5 +34,11 @@ public class GlobalExceptionHandler {
             logger.debug("Validation error - {}: {}", fieldName, errorMessage);
         });
         return Mono.just(errors);
+    }
+
+    @ExceptionHandler(ValidationException.class)  // Используем WebFlux исключение
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Mono<String> handleValidationException(ValidationException ex) {
+        return Mono.just(ex.getMessage());
     }
 }

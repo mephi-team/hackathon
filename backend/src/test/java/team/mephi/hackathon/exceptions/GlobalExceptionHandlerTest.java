@@ -31,7 +31,7 @@ class GlobalExceptionHandlerTest {
 
         // 3) Вызов метода-обработчика и получение результата
         GlobalExceptionHandler handler = new GlobalExceptionHandler();
-        Map<String, String> errors = handler.handleValidationException(ex).block();
+        Map<String, String> errors = handler.handleWebExchangeBindException(ex).block();
 
         // 4) Проверка результата
         assertNotNull(errors);
@@ -50,7 +50,7 @@ class GlobalExceptionHandlerTest {
         WebExchangeBindException ex = new WebExchangeBindException(parameter, bindingResult);
 
         GlobalExceptionHandler handler = new GlobalExceptionHandler();
-        Map<String, String> errors = handler.handleValidationException(ex).block();
+        Map<String, String> errors = handler.handleWebExchangeBindException(ex).block();
 
         assertNotNull(errors);
         assertEquals(2, errors.size());
@@ -68,7 +68,7 @@ class GlobalExceptionHandlerTest {
         WebExchangeBindException ex = new WebExchangeBindException(parameter, bindingResult);
 
         GlobalExceptionHandler handler = new GlobalExceptionHandler();
-        Map<String, String> errors = handler.handleValidationException(ex).block();
+        Map<String, String> errors = handler.handleWebExchangeBindException(ex).block();
 
         assertNotNull(errors);
         assertEquals(1, errors.size());
