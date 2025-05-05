@@ -66,7 +66,7 @@ public class TransactionServiceImpl implements TransactionService {
             spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("amount"), filter.getAmountMax()));
 
         // Фильтрация только по не удалённым
-        spec = spec.and((root, q, cb) -> cb.isFalse(root.get("deleted")));
+        spec = spec.and((root, q, cb) -> cb.notEqual(root.get("status"), "DELETED"));
 
         return repository.findAll(spec)
                 .stream()
@@ -108,7 +108,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         entity.setStatus(TransactionStatus.DELETED);
-        entity.setDeleted(true);
         repository.save(entity);
     }
 

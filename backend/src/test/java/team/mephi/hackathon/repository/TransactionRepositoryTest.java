@@ -54,8 +54,7 @@ class TransactionRepositoryTest {
     private Transaction buildTx(LocalDateTime opDate,
                                 TransactionType type,
                                 TransactionStatus status,
-                                String category,
-                                boolean deleted) {
+                                String category) {
         Transaction tx = new Transaction();
         tx.setEntityType("TEST");                                // обязательное поле
         tx.setPersonType(PersonType.LEGAL);
@@ -68,7 +67,6 @@ class TransactionRepositoryTest {
         tx.setReceiverBank("BankB");
         tx.setReceiverAccount("AccB");
         tx.setCategory(category);
-        tx.setDeleted(deleted);
         return tx;
     }
 
@@ -112,8 +110,8 @@ class TransactionRepositoryTest {
     @Test
     @DisplayName("Флаг deleted: findAllActive() возвращает только не удалённые")
     void givenDeletedFlag_thenFindAllActiveFiltersDeleted() {
-        Transaction kept = buildTx(LocalDateTime.now(), TransactionType.INCOME, TransactionStatus.NEW, "CAT", false);
-        Transaction gone = buildTx(LocalDateTime.now(), TransactionType.INCOME, TransactionStatus.NEW, "CAT", true);
+        Transaction kept = buildTx(LocalDateTime.now(), TransactionType.INCOME, TransactionStatus.NEW, "CAT");
+        Transaction gone = buildTx(LocalDateTime.now(), TransactionType.INCOME, TransactionStatus.DELETED, "CAT");
         em.persist(kept);
         em.persist(gone);
         em.flush();
@@ -121,15 +119,15 @@ class TransactionRepositoryTest {
         List<Transaction> result = repository.findAllActive();
         assertThat(result)
                 .hasSize(1)
-                .allMatch(tx -> !tx.isDeleted());
+                .allMatch(tx -> !tx.getStatus().equals(TransactionStatus.DELETED));
     }
 
     @Test
     @DisplayName("Полная фильтрация: по дате, типу, статусу и категории")
     void givenMultipleTransactions_whenFilterByAllCriteria_thenReturnOnlyMatches() {
         LocalDateTime now = LocalDateTime.now();
-        Transaction t1 = buildTx(now.minusDays(1), TransactionType.INCOME, TransactionStatus.COMPLETED, "SALARY", false);
-        Transaction t2 = buildTx(now.minusDays(10), TransactionType.OUTCOME, TransactionStatus.NEW, "BILLS", false);
+        Transaction t1 = buildTx(now.minusDays(1), TransactionType.INCOME, TransactionStatus.COMPLETED, "SALARY");
+        Transaction t2 = buildTx(now.minusDays(10), TransactionType.OUTCOME, TransactionStatus.NEW, "BILLS");
         em.persist(t1);
         em.persist(t2);
         em.flush();
@@ -160,8 +158,8 @@ class TransactionRepositoryTest {
     @Test
     @DisplayName("Null-параметры: null-аргументы игнорируются при фильтрации")
     void whenNullFilterParameters_thenIgnored() {
-        Transaction inc = buildTx(LocalDateTime.now(), TransactionType.INCOME, TransactionStatus.NEW, "X", false);
-        Transaction out = buildTx(LocalDateTime.now(), TransactionType.OUTCOME, TransactionStatus.NEW, "X", false);
+        Transaction inc = buildTx(LocalDateTime.now(), TransactionType.INCOME, TransactionStatus.NEW, "X");
+        Transaction out = buildTx(LocalDateTime.now(), TransactionType.OUTCOME, TransactionStatus.NEW, "X");
         em.persist(inc);
         em.persist(out);
         em.flush();

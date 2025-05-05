@@ -60,7 +60,4 @@ public class Transaction {
 
     @Column(length = 20)
     private String receiverPhone;
-
-    @Column(nullable = false)
-    private boolean deleted = false;
 }

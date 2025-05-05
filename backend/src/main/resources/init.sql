@@ -13,6 +13,5 @@ CREATE TABLE IF NOT EXISTS transactions (
     receiver_inn VARCHAR(12),
     receiver_account TEXT,
     category TEXT,
-    receiver_phone VARCHAR(20),
-    deleted BOOLEAN NOT NULL DEFAULT FALSE
+    receiver_phone VARCHAR(20)
     );

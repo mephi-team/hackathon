@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, UUID>, JpaSpecificationExecutor<Transaction> {
 
-    @Query("SELECT t FROM Transaction t WHERE t.deleted = false")
+    @Query("SELECT t FROM Transaction t WHERE t.status <> 'DELETED'")
     List<Transaction> findAllActive();
 
     Optional<Transaction> findById(UUID id);
