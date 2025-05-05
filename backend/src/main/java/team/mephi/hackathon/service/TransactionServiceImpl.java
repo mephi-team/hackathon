@@ -78,8 +78,14 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction entity = repository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException(id.toString()));
 
-        if (entity.getStatus() == TransactionStatus.COMPLETED) {
-            throw new ValidationException("Cannot update COMPLETED transaction");
+        switch (entity.getStatus()) {
+            case COMPLETED:
+            case CONFIRMED:
+            case IN_PROGRESS:
+            case CANCELED:
+            case DELETED:
+            case REFUND:
+                throw new ValidationException("Cannot update " + entity.getStatus().name() + " transaction");
         }
 
         validationService.validateTransaction(dto);
@@ -91,6 +97,17 @@ public class TransactionServiceImpl implements TransactionService {
     public void deleteTransaction(UUID id) {
         Transaction entity = repository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException(id.toString()));
+
+        switch (entity.getStatus()) {
+            case IN_PROGRESS:
+            case CANCELED:
+            case CONFIRMED:
+            case COMPLETED:
+            case REFUND:
+                throw new ValidationException("Cannot delete " + entity.getStatus().name() + " transaction");
+        }
+
+        entity.setStatus(TransactionStatus.DELETED);
         entity.setDeleted(true);
         repository.save(entity);
     }

@@ -215,6 +215,7 @@ class TransactionServiceImplTest {
         assertThat(updated.getAmount()).isEqualTo(BigDecimal.valueOf(2000));
     }
 
+    //Не допущены к редактированию операции со статусами: платеж выполнен
     @Test
     void updateTransaction_forbiddenStatus_shouldThrow_onCompleted() {
         UUID id = existingTransaction.getId();
@@ -227,128 +228,149 @@ class TransactionServiceImplTest {
                 .hasMessageContaining("COMPLETED");
     }
 
-//    @Test
-//    void updateTransaction_forbiddenStatusConfirmed_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.CONFIRMED);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.updateTransaction(id, fullDto)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("CONFIRMED");
-//    }
+    // Не допущены к редактированию операции со статусами: подтвержденная
+    @Test
+    void updateTransaction_forbiddenStatusConfirmed_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.CONFIRMED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
 
-//    @Test
-//    void updateTransaction_forbiddenStatusInProgress_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.IN_PROGRESS);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.updateTransaction(id, fullDto)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("IN_PROGRESS");
-//    }
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CONFIRMED");
+    }
 
-//    @Test
-//    void updateTransaction_forbiddenStatusCanceled_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.CANCELED);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.updateTransaction(id, fullDto)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("CANCELED");
-//    }
+    // Не допущены к редактированию операции со статусами: в обработке
+    @Test
+    void updateTransaction_forbiddenStatusInProgress_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.IN_PROGRESS);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
 
-//    @Test
-//    void updateTransaction_forbiddenStatusDeleted_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.DELETED);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.updateTransaction(id, fullDto)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("DELETED");
-//    }
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("IN_PROGRESS");
+    }
 
-//    @Test
-//    void updateTransaction_forbiddenStatusRefund_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.REFUND);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.updateTransaction(id, fullDto)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("REFUND");
-//    }
+    // Не допущены к редактированию операции со статусами: отменена
+    @Test
+    void updateTransaction_forbiddenStatusCanceled_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.CANCELED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
 
-    // === Forbidden Status Tests for Delete ===
-//    @Test
-//    void deleteTransaction_forbiddenStatusInProgress_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.IN_PROGRESS);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.deleteTransaction(id)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("IN_PROGRESS");
-//    }
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CANCELED");
+    }
 
-//    @Test
-//    void deleteTransaction_forbiddenStatusCanceled_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.CANCELED);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.deleteTransaction(id)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("CANCELED");
-//    }
+    // Не допущены к редактированию операции со статусами: платеж удален
+    @Test
+    void updateTransaction_forbiddenStatusDeleted_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.DELETED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
 
-//    @Test
-//    void deleteTransaction_forbiddenStatusCompleted_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.COMPLETED);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.deleteTransaction(id)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("COMPLETED");
-//    }
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("DELETED");
+    }
 
-//    @Test
-//    void deleteTransaction_forbiddenStatusRefund_shouldThrow() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.REFUND);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//
-//        assertThatThrownBy(() ->
-//                transactionService.deleteTransaction(id)
-//        ).isInstanceOf(ValidationException.class)
-//                .hasMessageContaining("REFUND");
-//    }
+    // Не допущены к редактированию операции со статусами: возврат
+    @Test
+    void updateTransaction_forbiddenStatusRefund_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.REFUND);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
 
-//    @Test
-//    void deleteTransaction_allowedStatus_shouldMarkPaymentDeleted() {
-//        UUID id = existingTransaction.getId();
-//        existingTransaction.setStatus(TransactionStatus.NEW);
-//        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
-//        when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
-//
-//        transactionService.deleteTransaction(id);
-//
-//        assertThat(existingTransaction.getStatus())
-//                .isEqualTo(TransactionStatus.DELETED);
-//        verify(transactionRepository).save(existingTransaction);
-//    }
+        assertThatThrownBy(() ->
+                transactionService.updateTransaction(id, fullDto)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("REFUND");
+    }
+
+    // Статусы транзакций, невозможные к удалению: подтвержденная
+    @Test
+    void deleteTransaction_forbiddenStatusConfirmed_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.CONFIRMED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CONFIRMED");
+    }
+
+    // Статусы транзакций, невозможные к удалению: в обработке,
+    @Test
+    void deleteTransaction_forbiddenStatusInProgress_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.IN_PROGRESS);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("IN_PROGRESS");
+    }
+
+    // Статусы транзакций, невозможные к удалению: отменена
+    @Test
+    void deleteTransaction_forbiddenStatusCanceled_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.CANCELED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CANCELED");
+    }
+
+    // Статусы транзакций, невозможные к удалению: платеж выполнен
+    @Test
+    void deleteTransaction_forbiddenStatusCompleted_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.COMPLETED);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("COMPLETED");
+    }
+
+    // Статусы транзакций, невозможные к удалению: возврат
+    @Test
+    void deleteTransaction_forbiddenStatusRefund_shouldThrow() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.REFUND);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+
+        assertThatThrownBy(() ->
+                transactionService.deleteTransaction(id)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessageContaining("REFUND");
+    }
+
+    @Test
+    void deleteTransaction_allowedStatus_shouldMarkPaymentDeleted() {
+        UUID id = existingTransaction.getId();
+        existingTransaction.setStatus(TransactionStatus.NEW);
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(existingTransaction));
+        when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        transactionService.deleteTransaction(id);
+
+        assertThat(existingTransaction.getStatus())
+                .isEqualTo(TransactionStatus.DELETED);
+        verify(transactionRepository).save(existingTransaction);
+    }
 
     @Test
     void updateTransaction_allEditableFields_shouldReplaceCorrectly() {
