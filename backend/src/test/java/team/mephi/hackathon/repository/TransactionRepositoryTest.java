@@ -96,7 +96,7 @@ class TransactionRepositoryTest {
         if (category != null)
             spec = spec.and((root, q, cb) -> cb.equal(root.get("category"), category));
         // Только не удалённые
-        spec = spec.and((root, q, cb) -> cb.isFalse(root.get("deleted")));
+        spec = spec.and((root, q, cb) -> cb.notEqual(root.get("status"), "DELETED"));
         return spec;
     }
 
