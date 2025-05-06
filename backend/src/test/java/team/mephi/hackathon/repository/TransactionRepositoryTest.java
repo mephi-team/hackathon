@@ -56,7 +56,6 @@ class TransactionRepositoryTest {
                                 TransactionStatus status,
                                 String category) {
         Transaction tx = new Transaction();
-        tx.setEntityType("TEST");                                // обязательное поле
         tx.setPersonType(PersonType.LEGAL);
         tx.setOperationDate(opDate);
         tx.setTransactionType(type);

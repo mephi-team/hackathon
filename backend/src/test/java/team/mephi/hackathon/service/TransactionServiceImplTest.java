@@ -65,7 +65,6 @@ class TransactionServiceImplTest {
 
         existingTransaction = new Transaction();
         existingTransaction.setId(UUID.randomUUID());
-        existingTransaction.setEntityType("TEST");
         existingTransaction.setPersonType(PersonType.LEGAL);
         existingTransaction.setOperationDate(LocalDateTime.now());
         existingTransaction.setTransactionType(TransactionType.INCOME);

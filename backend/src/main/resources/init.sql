@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS transactions (
     id UUID PRIMARY KEY,
-    entity_type TEXT,
     person_type TEXT,
     operation_date TIMESTAMP NOT NULL,
     transaction_type TEXT,

@@ -78,7 +78,6 @@ class ReportControllerIntegrationTest {
         tx.setReceiverInn("1234567890");
         tx.setCategory("SALARY");
         tx.setReceiverPhone("+79876543210");
-        tx.setEntityType("TEST");
         return tx;
     }
 

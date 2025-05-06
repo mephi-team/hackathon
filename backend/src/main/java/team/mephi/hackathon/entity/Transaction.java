@@ -16,9 +16,6 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "entity_type", nullable = false)
-    private String entityType;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PersonType personType;
