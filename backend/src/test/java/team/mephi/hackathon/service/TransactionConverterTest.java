@@ -2,6 +2,7 @@ package team.mephi.hackathon.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import team.mephi.hackathon.dto.TransactionRequestDto;
@@ -19,12 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class TransactionConverterTest {
-
-    @Autowired
-    private TransactionServiceImpl transactionService;
-
     private TransactionRequestDto dto;
     private Transaction entity;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() {
@@ -62,7 +62,7 @@ public class TransactionConverterTest {
 
     @Test
     void mapToEntity_shouldConvertAllFieldsCorrectly() {
-        Transaction result = transactionService.mapToEntity(dto);
+        Transaction result = modelMapper.map(dto, Transaction.class);
 
         assertThat(result).isNotNull();
 
@@ -83,7 +83,7 @@ public class TransactionConverterTest {
 
     @Test
     void mapToDto_shouldConvertAllFieldsCorrectly() {
-        TransactionResponseDto result = transactionService.mapToDto(entity);
+        TransactionResponseDto result = modelMapper.map(entity, TransactionResponseDto.class);
 
         assertThat(result).isNotNull();
 
@@ -105,7 +105,7 @@ public class TransactionConverterTest {
     @Test
     void updateEntity_shouldReplaceAllFieldsCorrectly() {
         Transaction updatedEntity = new Transaction();
-        transactionService.updateEntity(updatedEntity, dto);
+        modelMapper.map(dto, updatedEntity);
 
         assertThat(updatedEntity.getPersonType()).isEqualTo(PersonType.LEGAL);
         assertThat(updatedEntity.getTransactionType()).isEqualTo(TransactionType.INCOME);
@@ -125,7 +125,7 @@ public class TransactionConverterTest {
     @Test
     void mapToEntity_withNullFields_shouldHandleGracefully() {
         TransactionRequestDto emptyDto = new TransactionRequestDto();
-        Transaction result = transactionService.mapToEntity(emptyDto);
+        Transaction result = modelMapper.map(emptyDto, Transaction.class);
 
         assertThat(result.getPersonType()).isNull();
         assertThat(result.getTransactionType()).isNull();
