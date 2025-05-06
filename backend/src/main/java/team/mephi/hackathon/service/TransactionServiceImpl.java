@@ -36,8 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public TransactionResponseDto getTransaction(UUID id) {
-        return mapToDto(repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id.toString())));
+        return mapToDto(getExistingTransactionOrThrowException(id));
     }
 
     public List<TransactionResponseDto> searchTransactions(TransactionFilterDto filter) {
@@ -76,8 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public TransactionResponseDto updateTransaction(UUID id, TransactionRequestDto dto) {
-        Transaction entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
+        Transaction entity = getExistingTransactionOrThrowException(id);
 
         switch (entity.getStatus()) {
             case COMPLETED:
@@ -96,8 +94,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public void deleteTransaction(UUID id) {
-        Transaction entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
+        Transaction entity = getExistingTransactionOrThrowException(id);
 
         switch (entity.getStatus()) {
             case IN_PROGRESS:
@@ -122,5 +119,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     TransactionResponseDto mapToDto(Transaction entity) {
         return modelMapper.map(entity, TransactionResponseDto.class);
+    }
+
+    private Transaction getExistingTransactionOrThrowException(UUID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transaction " + id + " not found."));
     }
 }
