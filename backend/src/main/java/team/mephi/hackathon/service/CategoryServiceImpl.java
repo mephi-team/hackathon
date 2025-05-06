@@ -1,6 +1,7 @@
 package team.mephi.hackathon.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import team.mephi.hackathon.controller.CategoryService;
 import team.mephi.hackathon.dto.CategoryRequestDto;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repository;
+    private final ModelMapper modelMapper;
 
     public List<CategoryResponseDto> getCategories() {
         return repository.findAll().stream().map(this::mapToDto).toList();
@@ -42,15 +44,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private CategoryResponseDto mapToDto(Category category) {
-        return new CategoryResponseDto(category.getId(), category.getName());
+        return modelMapper.map(category, CategoryResponseDto.class);
     }
 
     private Category mapToEntity(CategoryRequestDto dto) {
-        return new Category(dto.getName());
+        return modelMapper.map(dto, Category.class);
     }
 
     private Category getExistingCategoryOrThrowException(UUID id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Category " + id.toString() + " not found."));
+                .orElseThrow(() -> new EntityNotFoundException("Category " + id + " not found."));
     }
 }
