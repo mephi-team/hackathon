@@ -1,12 +1,12 @@
 package team.mephi.hackathon.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import team.mephi.hackathon.controller.TransactionService;
 import team.mephi.hackathon.controller.ValidationService;
 import team.mephi.hackathon.dto.*;
-import team.mephi.hackathon.entity.PersonType;
 import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.entity.TransactionStatus;
 import team.mephi.hackathon.entity.TransactionType;
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository repository;
     private final ValidationService validationService;
+    private final ModelMapper modelMapper;
 
     public List<Transaction> getTransactions(Specification<Transaction> specification) {
         return repository.findAll(specification);
@@ -111,56 +112,15 @@ public class TransactionServiceImpl implements TransactionService {
         repository.save(entity);
     }
 
-    private Transaction mapToEntity(TransactionRequestDto dto) {
-        Transaction entity = new Transaction();
-        entity.setPersonType(PersonType.valueOf(dto.getPersonType().toUpperCase()));
-        entity.setOperationDate(dto.getOperationDate());
-        entity.setTransactionType(TransactionType.valueOf(dto.getTransactionType().toUpperCase()));
-        entity.setComment(dto.getComment());
-        entity.setAmount(dto.getAmount());
-        entity.setStatus(TransactionStatus.valueOf(dto.getStatus().toUpperCase()));
-        entity.setSenderBank(dto.getSenderBank());
-        entity.setAccount(dto.getAccount());
-        entity.setReceiverBank(dto.getReceiverBank());
-        entity.setReceiverInn(dto.getReceiverInn());
-        entity.setReceiverAccount(dto.getReceiverAccount());
-        entity.setCategory(dto.getCategory());
-        entity.setReceiverPhone(dto.getReceiverPhone());
-        return entity;
+    Transaction mapToEntity(TransactionRequestDto dto) {
+        return modelMapper.map(dto, Transaction.class);
     }
 
-    private void updateEntity(Transaction entity, TransactionRequestDto dto) {
-        entity.setPersonType(PersonType.valueOf(dto.getPersonType().toUpperCase()));
-        entity.setOperationDate(dto.getOperationDate());
-        entity.setTransactionType(TransactionType.valueOf(dto.getTransactionType().toUpperCase()));
-        entity.setComment(dto.getComment());
-        entity.setAmount(dto.getAmount());
-        entity.setStatus(TransactionStatus.valueOf(dto.getStatus().toUpperCase()));
-        entity.setSenderBank(dto.getSenderBank());
-        entity.setAccount(dto.getAccount());
-        entity.setReceiverBank(dto.getReceiverBank());
-        entity.setReceiverInn(dto.getReceiverInn());
-        entity.setReceiverAccount(dto.getReceiverAccount());
-        entity.setCategory(dto.getCategory());
-        entity.setReceiverPhone(dto.getReceiverPhone());
+    void updateEntity(Transaction entity, TransactionRequestDto dto) {
+        modelMapper.map(dto, entity);
     }
 
-    private TransactionResponseDto mapToDto(Transaction entity) {
-        TransactionResponseDto dto = new TransactionResponseDto();
-        dto.setId(entity.getId());
-        dto.setPersonType(entity.getPersonType().name());
-        dto.setOperationDate(entity.getOperationDate());
-        dto.setTransactionType(entity.getTransactionType().name());
-        dto.setComment(entity.getComment());
-        dto.setAmount(entity.getAmount());
-        dto.setStatus(entity.getStatus().name());
-        dto.setSenderBank(entity.getSenderBank());
-        dto.setAccount(entity.getAccount());
-        dto.setReceiverBank(entity.getReceiverBank());
-        dto.setReceiverInn(entity.getReceiverInn());
-        dto.setReceiverAccount(entity.getReceiverAccount());
-        dto.setCategory(entity.getCategory());
-        dto.setReceiverPhone(entity.getReceiverPhone());
-        return dto;
+    TransactionResponseDto mapToDto(Transaction entity) {
+        return modelMapper.map(entity, TransactionResponseDto.class);
     }
 }
