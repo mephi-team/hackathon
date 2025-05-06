@@ -2,8 +2,8 @@ package team.mephi.hackathon.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import team.mephi.hackathon.dto.TransactionRequestDto;
 import team.mephi.hackathon.dto.TransactionResponseDto;
@@ -22,8 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TransactionConverterTest {
     private TransactionRequestDto dto;
     private Transaction entity;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @BeforeEach
@@ -58,6 +56,8 @@ public class TransactionConverterTest {
         entity.setReceiverInn("0987654321");
         entity.setCategory("OLD_SALARY");
         entity.setReceiverPhone("80000000000");
+
+        modelMapper = new ModelMapper();
     }
 
     @Test
