@@ -3,9 +3,9 @@ package team.mephi.hackathon.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 import team.mephi.hackathon.controller.ValidationService;
 import team.mephi.hackathon.dto.TransactionFilterDto;
@@ -40,7 +40,6 @@ class TransactionServiceImplTest {
     @Mock
     private ValidationService validationService;
 
-    @InjectMocks
     private TransactionServiceImpl transactionService;
 
     private TransactionRequestDto fullDto;
@@ -78,6 +77,13 @@ class TransactionServiceImplTest {
         existingTransaction.setReceiverInn("0000000000");
         existingTransaction.setCategory("OldCategory");
         existingTransaction.setReceiverPhone("80000000000");
+
+        ModelMapper modelMapper = new ModelMapper();
+        transactionService = new TransactionServiceImpl(
+                transactionRepository,
+                validationService,
+                modelMapper
+        );
     }
 
     @Test
