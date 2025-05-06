@@ -131,9 +131,9 @@ class ReportControllerIntegrationTest {
         webTestClient.get()
                 .uri("/api/reports/transactions/pdf")
                 .exchange()
-                .expectStatus().is5xxServerError()
+                .expectStatus().isNotFound()
                 .expectBody()
-                .jsonPath("$.error").isEqualTo("Internal Server Error");
+                .jsonPath("$.error").isEqualTo("Нет активных транзакций для отчёта");
     }
 
     @Test
@@ -141,8 +141,8 @@ class ReportControllerIntegrationTest {
         webTestClient.get()
                 .uri("/api/reports/transactions/excel")
                 .exchange()
-                .expectStatus().is5xxServerError()
+                .expectStatus().isNotFound()
                 .expectBody()
-                .jsonPath("$.error").isEqualTo("Internal Server Error");
+                .jsonPath("$.error").isEqualTo("Нет активных транзакций для отчёта");
     }
 }

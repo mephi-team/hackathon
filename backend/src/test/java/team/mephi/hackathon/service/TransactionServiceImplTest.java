@@ -15,7 +15,7 @@ import team.mephi.hackathon.entity.PersonType;
 import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.entity.TransactionStatus;
 import team.mephi.hackathon.entity.TransactionType;
-import team.mephi.hackathon.exceptions.TransactionNotFoundException;
+import team.mephi.hackathon.exceptions.EntityNotFoundException;
 import team.mephi.hackathon.exceptions.ValidationException;
 import team.mephi.hackathon.repository.TransactionRepository;
 
@@ -110,7 +110,7 @@ class TransactionServiceImplTest {
         when(transactionRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> transactionService.getTransaction(id))
-                .isInstanceOf(TransactionNotFoundException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(id.toString());
     }
 

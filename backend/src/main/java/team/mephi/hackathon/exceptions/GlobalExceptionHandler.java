@@ -21,6 +21,12 @@ public class GlobalExceptionHandler {
         logger.info("GlobalExceptionHandler initialized"); // логирование инициализации
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)// Используем WebFlux исключение
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Mono<String> handleTransactionNotFoundException(EntityNotFoundException ex) {
+        return Mono.just(ex.getMessage());
+    }
+
     @ExceptionHandler(WebExchangeBindException.class)  // Используем WebFlux исключение
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Mono<Map<String, String>> handleWebExchangeBindException(WebExchangeBindException ex) {

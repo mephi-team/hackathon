@@ -77,18 +77,10 @@ class GlobalExceptionHandlerTest {
 }
 
 class ExceptionsTest {
-
-    @Test
-    void noTransactionsFoundException_message() {
-        String msg = "No active transactions";
-        NoTransactionsFoundException ex = new NoTransactionsFoundException(msg);
-        assertEquals(msg, ex.getMessage());
-    }
-
     @Test
     void transactionNotFoundException_message() {
         String msg = "Transaction 123 not found";
-        TransactionNotFoundException ex = new TransactionNotFoundException(msg);
+        EntityNotFoundException ex = new EntityNotFoundException(msg);
         assertEquals(msg, ex.getMessage());
     }
 }

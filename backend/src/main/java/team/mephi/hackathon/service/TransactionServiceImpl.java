@@ -10,7 +10,7 @@ import team.mephi.hackathon.entity.PersonType;
 import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.entity.TransactionStatus;
 import team.mephi.hackathon.entity.TransactionType;
-import team.mephi.hackathon.exceptions.TransactionNotFoundException;
+import team.mephi.hackathon.exceptions.EntityNotFoundException;
 import team.mephi.hackathon.exceptions.ValidationException;
 import team.mephi.hackathon.repository.TransactionRepository;
 
@@ -36,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     public TransactionResponseDto getTransaction(UUID id) {
         return mapToDto(repository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(id.toString())));
+                .orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     public List<TransactionResponseDto> searchTransactions(TransactionFilterDto filter) {
@@ -76,7 +76,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     public TransactionResponseDto updateTransaction(UUID id, TransactionRequestDto dto) {
         Transaction entity = repository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
 
         switch (entity.getStatus()) {
             case COMPLETED:
@@ -96,7 +96,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     public void deleteTransaction(UUID id) {
         Transaction entity = repository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(id.toString()));
 
         switch (entity.getStatus()) {
             case IN_PROGRESS:

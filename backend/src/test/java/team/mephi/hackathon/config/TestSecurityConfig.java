@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import reactor.core.publisher.Mono;
 import team.mephi.hackathon.exceptions.GlobalExceptionHandler;
-import team.mephi.hackathon.exceptions.TransactionNotFoundException;
+import team.mephi.hackathon.exceptions.EntityNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +34,9 @@ public class TestSecurityConfig {
     @RestControllerAdvice
     static class TestExceptionHandler {
 
-        @ExceptionHandler(TransactionNotFoundException.class)
+        @ExceptionHandler(EntityNotFoundException.class)
         @ResponseStatus(HttpStatus.NOT_FOUND)
-        public Mono<Map<String, String>> handleTransactionNotFound(TransactionNotFoundException ex) {
+        public Mono<Map<String, String>> handleTransactionNotFound(EntityNotFoundException ex) {
             Map<String, String> error = new HashMap<>();
             error.put("error", ex.getMessage());
             return Mono.just(error);

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team.mephi.hackathon.entity.Transaction;
-import team.mephi.hackathon.exceptions.NoTransactionsFoundException;
+import team.mephi.hackathon.exceptions.EntityNotFoundException;
 import team.mephi.hackathon.repository.TransactionRepository;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class ReportController {
         List<Transaction> transactions = transactionRepository.findAllActive();
 
         if (transactions.isEmpty()) {
-            throw new NoTransactionsFoundException("Нет активных транзакций для отчёта");
+            throw new EntityNotFoundException("Нет активных транзакций для отчёта");
         }
 
         byte[] pdfBytes = reportService.generatePdfReport(transactions);
@@ -52,7 +52,7 @@ public class ReportController {
         List<Transaction> transactions = transactionRepository.findAllActive();
 
         if (transactions.isEmpty()) {
-            throw new NoTransactionsFoundException("Нет активных транзакций для отчёта");
+            throw new EntityNotFoundException("Нет активных транзакций для отчёта");
         }
 
         byte[] excelBytes = reportService.generateExcelReport(transactions);

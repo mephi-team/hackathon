@@ -8,6 +8,7 @@ import team.mephi.hackathon.dto.CategoryRequestDto;
 import team.mephi.hackathon.dto.CategoryResponseDto;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -24,5 +25,19 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryResponseDto createCategory(@Valid @RequestBody CategoryRequestDto dto) {
         return service.createCategory(dto);
+    }
+
+    @PutMapping("/{id}")
+    public CategoryResponseDto update(
+            @PathVariable UUID id,
+            @Valid @RequestBody CategoryRequestDto dto
+    ) {
+        return service.updateCategory(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable UUID id) {
+        service.deleteCategory(id);
     }
 }
