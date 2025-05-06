@@ -2,9 +2,7 @@ package team.mephi.hackathon.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
 import team.mephi.hackathon.dto.TransactionRequestDto;
 import team.mephi.hackathon.dto.TransactionResponseDto;
 import team.mephi.hackathon.entity.PersonType;
@@ -18,7 +16,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 public class TransactionConverterTest {
     private TransactionRequestDto dto;
     private Transaction entity;
