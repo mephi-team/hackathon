@@ -1,2 +1,4 @@
 .idea
 /keycloak-data/
+allure-results/
+.allure/
