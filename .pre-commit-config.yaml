@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-xml
+
+  # Backend: Maven + Checkstyle + fmt-maven-plugin
+  - repo: local
+    hooks:
+      - id: maven-checkstyle
+        name: Maven Checkstyle
+        entry: sh -c "cd backend && mvn checkstyle:check"
+        language: system
+        pass_filenames: false
+        description: "Проверяет стиль Java-кода согласно Google Java Style"
+#        verbose: true
+        args: []
+
+      - id: maven-format-check
+        name: Maven Format Check
+        entry: sh -c "cd backend && mvn fmt:check"
+        language: system
+        pass_filenames: false
+        description: "Проверяет форматирование Java-кода с помощью Google Java Format"
+#        verbose: true
+        args: []
+
+  # Frontend: ESLint / Prettier (опционально)
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint
+        entry: sh -c "cd frontend && npm run lint"
+        language: system
+        pass_filenames: false
+        description: "Проверяет JavaScript/TypeScript файлы через ESLint"
+#        verbose: true
+        args: []
