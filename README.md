@@ -1,4 +1,4 @@
-# Описание проекта: Spring Boot + Keycloak + PostgreSQL + React 
+# Описание проекта: Spring Boot + Keycloak + PostgreSQL + React
 
 [![CI](https://github.com/mephi-team/hackathon/workflows/CI%20Pipeline/badge.svg)](https://github.com/mephi-team/hackathon/actions/workflows/maven-test.yml)
 
@@ -133,7 +133,7 @@ docker-compose up --build
 
 - **Frontend** : [http://localhost:3000](http://localhost:3000/)
 - **Swagger UI** : [http://localhost:8000/swagger-ui/index.html](http://localhost:8000/swagger-ui/index.html)
-- **Keycloak Admin Console** : [http://localhost:8080](http://localhost:8080/)  
+- **Keycloak Admin Console** : [http://localhost:8080](http://localhost:8080/)
   Логин: `admin`, пароль: `admin`
 
 ---
