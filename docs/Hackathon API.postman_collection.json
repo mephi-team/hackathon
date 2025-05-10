@@ -11,6 +11,22 @@
 			"item": [
 				{
 					"name": "Создать транзакцию (POST)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Has category\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"transaction_id\", jsonData.id);",
+									"    pm.expect(jsonData.status).to.eq(\"NEW\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -136,7 +152,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/transactions?senderBank=Alpha Bank&amountMin=900&amountMax=1000&dateFrom=2025-04-05T12:30&dateTo=2025-04-05T23:59",
+							"raw": "http://localhost:8000/api/transactions?senderBank=Alpha Bank&amountMin=900&amountMax=1000&dateFrom=2025-04-05T00:00&dateTo=2025-04-05T23:59",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -161,7 +177,7 @@
 								},
 								{
 									"key": "dateFrom",
-									"value": "2025-04-05T12:30"
+									"value": "2025-04-05T00:00"
 								},
 								{
 									"key": "dateTo",
