@@ -79,6 +79,48 @@ username=user1
 password=password123
 ```
 
+### ✅ Создание транзакции:
+
+```http
+POST http://localhost:8000/api/transactions
+Content-Type: application/json
+
+{
+  "personType": "LEGAL",
+  "operationDate": "2025-04-05T12:30:00",
+  "transactionType": "INCOME",
+  "amount": 5000.0,
+  "status": "NEW",
+  "senderBank": "Alpha Bank",
+  "account": "ACC123",
+  "receiverBank": "Beta Bank",
+  "receiverAccount": "REC456",
+  "receiverInn": "1234567890",
+  "category": "SALARY",
+  "receiverPhone": "+79876543210"
+}
+```
+
+### 🔍 Поиск транзакций:
+
+```http
+GET http://localhost:8000/api/transactions?senderBank=Alpha%20Bank&amountMin=1000&dateFrom=2025-04-01T00:00&dateTo=2025-04-10T23:59
+```
+
+### 📄 Генерация отчёта:
+
+```http
+GET http://localhost:8000/api/reports/transactions/pdf
+Accept: application/pdf
+```
+
+или
+
+```http
+GET http://localhost:8000/api/reports/transactions/excel
+Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+```
+
 ## 5. Тестирование
 
 ### ✅ Unit-тесты:
@@ -137,51 +179,8 @@ docker-compose up --build
   Логин: `admin`, пароль: `admin`
 
 ---
-## 7. Примеры использования API
 
-### ✅ Создание транзакции:
-
-```http
-POST http://localhost:8000/api/transactions
-Content-Type: application/json
-
-{
-  "personType": "LEGAL",
-  "operationDate": "2025-04-05T12:30:00",
-  "transactionType": "INCOME",
-  "amount": 5000.0,
-  "status": "NEW",
-  "senderBank": "Alpha Bank",
-  "account": "ACC123",
-  "receiverBank": "Beta Bank",
-  "receiverAccount": "REC456",
-  "receiverInn": "1234567890",
-  "category": "SALARY",
-  "receiverPhone": "+79876543210"
-}
-```
-
-### 🔍 Поиск транзакций:
-
-```http
-GET http://localhost:8000/api/transactions?senderBank=Alpha%20Bank&amountMin=1000&dateFrom=2025-04-01T00:00&dateTo=2025-04-10T23:59
-```
-
-### 📄 Генерация отчёта:
-
-```http
-GET http://localhost:8000/api/reports/transactions/pdf
-Accept: application/pdf
-```
-
-или
-
-```http
-GET http://localhost:8000/api/reports/transactions/excel
-Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-```
-
-## 8. Линтеры и форматтеры кода
+## 7. Линтеры и форматтеры кода
 
 Для обеспечения чистоты, читаемости и соответствия кода стандартам в проекте внедрены следующие инструменты:
 
