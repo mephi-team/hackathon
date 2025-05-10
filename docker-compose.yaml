@@ -47,7 +47,7 @@ services:
     restart: always
   backend:
     build:
-      context: ./backend
+      context: backend
     environment:
       SERVER_PORT: 8000
       PG_HOST: db

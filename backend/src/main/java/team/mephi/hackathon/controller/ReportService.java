@@ -1,30 +1,28 @@
 package team.mephi.hackathon.controller;
 
-import team.mephi.hackathon.entity.Transaction;
-
 import java.io.IOException;
 import java.util.List;
+import team.mephi.hackathon.entity.Transaction;
 
 /**
- * Сервис генерации отчётов по транзакциям.
- * Колонки в отчётах полностью соответствуют полям,
+ * Сервис генерации отчётов по транзакциям. Колонки в отчётах полностью соответствуют полям,
  * описанным в {@link team.mephi.hackathon.dto.TransactionRequestDto}.
  */
 public interface ReportService {
 
-    /**
-     * Создаёт PDF-отчёт по списку транзакций.
-     *
-     * @param transactions список активных транзакций
-     * @return содержимое сформированного PDF-файла
-     */
-    byte[] generatePdfReport(List<Transaction> transactions) throws IOException;
+  /**
+   * Создаёт PDF-отчёт по списку транзакций.
+   *
+   * @param transactions список активных транзакций
+   * @return содержимое сформированного PDF-файла
+   */
+  byte[] generatePdfReport(List<Transaction> transactions) throws IOException;
 
-    /**
-     * Создаёт Excel-отчёт по списку транзакций.
-     *
-     * @param transactions список активных транзакций
-     * @return содержимое сформированного XLSX-файла
-     */
-    byte[] generateExcelReport(List<Transaction> transactions) throws IOException;
+  /**
+   * Создаёт Excel-отчёт по списку транзакций.
+   *
+   * @param transactions список активных транзакций
+   * @return содержимое сформированного XLSX-файла
+   */
+  byte[] generateExcelReport(List<Transaction> transactions) throws IOException;
 }
