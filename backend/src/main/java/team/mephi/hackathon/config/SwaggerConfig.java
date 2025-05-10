@@ -12,8 +12,8 @@ public class SwaggerConfig {
     return new OpenAPI()
         .info(
             new Info()
-                .title("My Reactive API")
+                .title("Reactive API")
                 .version("1.0")
-                .description("API documentation for my Spring WebFlux application"));
+                .description("Документация API для приложения Spring WebFlux"));
   }
 }
