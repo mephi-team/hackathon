@@ -1,0 +1,455 @@
+{
+	"info": {
+		"_postman_id": "0ec22451-17d7-44b2-8965-8110f2a15ec8",
+		"name": "Hackathon API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2507467"
+	},
+	"item": [
+		{
+			"name": "Transaction Controller",
+			"item": [
+				{
+					"name": "Создать транзакцию (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{transaction_id}}\",\n  \"personType\": \"LEGAL\",\n  \"operationDate\": \"2025-04-05T12:30:00\",\n  \"transactionType\": \"INCOME\",\n  \"amount\": 1000.0,\n  \"status\": \"NEW\",\n  \"senderBank\": \"Alpha Bank\",\n  \"account\": \"ACC123\",\n  \"receiverBank\": \"Beta Bank\",\n  \"receiverAccount\": \"REC456\",\n  \"receiverInn\": \"1234567890\",\n  \"category\": \"SALARY\",\n  \"receiverPhone\": \"+79876543210\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить все транзакции (GET)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить транзакцию по ID (GET /{id})",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/transactions/{{transaction_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"transactions",
+								"{{transaction_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновить транзакцию (PUT /{id})",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{transaction_id}}\",\n  \"personType\": \"PHYSICAL\",\n  \"operationDate\": \"2025-04-05T14:30:00\",\n  \"transactionType\": \"OUTCOME\",\n  \"amount\": 500.0,\n  \"status\": \"COMPLETED\",\n  \"senderBank\": \"New Sender\",\n  \"account\": \"NEW123\",\n  \"receiverBank\": \"New Receiver\",\n  \"receiverAccount\": \"NEW456\",\n  \"receiverInn\": \"0987654321\",\n  \"category\": \"UTILITY\",\n  \"receiverPhone\": \"81234567890\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/transactions/{{transaction_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"transactions",
+								"{{transaction_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить транзакцию (DELETE /{id})",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/transactions/{{transaction_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"transactions",
+								"{{transaction_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Фильтрация транзакций (GET с параметрами)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/transactions?senderBank=Alpha Bank&amountMin=900&amountMax=1000&dateFrom=2025-04-05T12:30&dateTo=2025-04-05T23:59",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "senderBank",
+									"value": "Alpha Bank"
+								},
+								{
+									"key": "amountMin",
+									"value": "900"
+								},
+								{
+									"key": "amountMax",
+									"value": "1000"
+								},
+								{
+									"key": "dateFrom",
+									"value": "2025-04-05T12:30"
+								},
+								{
+									"key": "dateTo",
+									"value": "2025-04-05T23:59"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category Controller",
+			"item": [
+				{
+					"name": "Создать категорию (POST)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Has category\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"category_id\", jsonData.id);",
+									"    pm.expect(jsonData.name).to.eq(\"SALARY\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"SALARY\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить все категории (GET)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Has category\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var category_id = pm.collectionVariables.get(\"category_id\");",
+									"    pm.expect(jsonData.map(c => c.id)).to.contains(category_id);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновить категорию (PUT /{id})",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Has category\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var category_id = pm.collectionVariables.get(\"category_id\");",
+									"    pm.expect(jsonData.id).to.eq(category_id);",
+									"    pm.expect(jsonData.name).to.eq(\"UPDATED_CATEGORY\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"UPDATED_CATEGORY\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/categories/{{category_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"categories",
+								"{{category_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить категорию (DELETE /{id})",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/categories/{{category_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"categories",
+								"{{category_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report Controller",
+			"item": [
+				{
+					"name": "Скачать PDF отчет",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/pdf"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/reports/transactions/pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reports",
+								"transactions",
+								"pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Скачать Excel отчет",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/reports/transactions/excel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reports",
+								"transactions",
+								"excel"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.sendRequest({",
+					"    url: 'http://localhost:8080/realms/hackathon-realm/protocol/openid-connect/token',",
+					"    method: 'POST',",
+					"    header: 'Content-Type:application/x-www-form-urlencoded',",
+					"    body: {",
+					"          mode: 'urlencoded',",
+					"          urlencoded: [",
+					"            {key: \"client_id\", value: \"hackathon-frontend\", disabled: false},",
+					"            {key: \"grant_type\", value: \"password\", disabled: false},",
+					"            {key: \"username\", value: \"user1\", disabled: false},",
+					"            {key: \"password\", value: \"password123\", disabled: false}",
+					"        ]",
+					"      }",
+					"}, function (err, res) {",
+					"    pm.collectionVariables.set(\"access_token\", res.json().access_token)",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "transaction_id",
+			"value": "00000000-0000-0000-0000-000000000000",
+			"type": "string"
+		},
+		{
+			"key": "category_id",
+			"value": "00000000-0000-0000-0000-000000000000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "bad",
+			"type": "string"
+		}
+	]
+}
