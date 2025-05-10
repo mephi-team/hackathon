@@ -21,15 +21,28 @@ import org.springframework.stereotype.Service;
 import team.mephi.hackathon.controller.ReportService;
 import team.mephi.hackathon.entity.Transaction;
 
+/** Реализация сервиса генерации отчётов по транзакциям. Поддерживает форматы: PDF и Excel. */
 @Service
 public class ReportServiceImpl implements ReportService {
 
+  /** Форматтер даты для вывода в отчётах. Используется шаблон "dd.MM.yyyy HH:mm". */
   private static final DateTimeFormatter DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
+  /**
+   * Форматтер денежных значений. Использует русскую локаль (например, запятую как десятичный
+   * разделитель).
+   */
   private static final NumberFormat MONEY_FORMAT =
       NumberFormat.getNumberInstance(new Locale("ru", "RU"));
 
+  /**
+   * Генерирует PDF-отчёт по списку транзакций.
+   *
+   * @param transactions список транзакций для включения в отчёт
+   * @return массив байт с содержимым PDF-документа
+   * @throws IOException если произошла ошибка при работе с PDF
+   */
   public byte[] generatePdfReport(List<Transaction> transactions) throws IOException {
     try (PDDocument document = new PDDocument()) {
       PDPage page = new PDPage();
@@ -75,6 +88,13 @@ public class ReportServiceImpl implements ReportService {
     }
   }
 
+  /**
+   * Генерирует Excel-отчёт по списку транзакций.
+   *
+   * @param transactions список транзакций для включения в отчёт
+   * @return массив байт с содержимым XLSX-файла
+   * @throws IOException если произошла ошибка при создании файла
+   */
   public byte[] generateExcelReport(List<Transaction> transactions) throws IOException {
     try (Workbook workbook = new XSSFWorkbook()) {
       Sheet sheet = workbook.createSheet("Transactions");

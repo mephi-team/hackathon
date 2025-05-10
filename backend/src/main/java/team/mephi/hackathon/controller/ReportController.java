@@ -1,5 +1,10 @@
 package team.mephi.hackathon.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -13,20 +18,43 @@ import team.mephi.hackathon.entity.Transaction;
 import team.mephi.hackathon.exceptions.EntityNotFoundException;
 import team.mephi.hackathon.repository.TransactionRepository;
 
-/**
- * REST-контроллер для скачивания отчётов по транзакциям. Формат отчётов отражает все поля из {@link
- * team.mephi.hackathon.dto.TransactionRequestDto}.
- */
+/** REST-контроллер для генерации отчётов по транзакциям. Поддерживает форматы: PDF и Excel. */
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
+@Tag(name = "Отчёты", description = "API для генерации отчётов по транзакциям")
 public class ReportController {
-
+  /**
+   * Сервис для работы с транзакциями. Используется для получения данных перед генерацией отчёта.
+   */
   private final TransactionRepository transactionRepository;
+
+  /** Сервис для генерации отчётов. Инжектируется через конструктор. */
   private final ReportService reportService;
 
-  /** Сформировать и отдать PDF-отчёт. */
+  /**
+   * Генерирует PDF-отчёт по транзакциям за указанный период.
+   *
+   * @return PDF-файл с данными о транзакциях
+   */
   @GetMapping(value = "/transactions/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+  @Operation(
+      summary = "Скачать PDF-отчёт",
+      description = "Генерирует и возвращает PDF-файл с транзакциями за указанный период",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "PDF-отчёт успешно сгенерирован",
+            content = @Content(mediaType = "application/pdf")),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Нет активных транзакций для отчёта",
+            content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Ошибка при генерации отчёта",
+            content = @Content(schema = @Schema(implementation = String.class)))
+      })
   public ResponseEntity<byte[]> generatePdfReport() throws IOException {
     List<Transaction> transactions = transactionRepository.findAllActive();
 
@@ -40,10 +68,34 @@ public class ReportController {
         .body(pdfBytes);
   }
 
-  /** Сформировать и отдать Excel-отчёт. */
+  /**
+   * Генерирует Excel-отчёт по транзакциям за указанный период.
+   *
+   * @return XLSX-файл с данными о транзакциях
+   */
   @GetMapping(
       value = "/transactions/excel",
       produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+  @Operation(
+      summary = "Скачать Excel-отчёт",
+      description = "Генерирует и возвращает Excel-файл с транзакциями за указанный период",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Excel-отчёт успешно сгенерирован",
+            content =
+                @Content(
+                    mediaType =
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Нет активных транзакций для отчёта",
+            content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Ошибка при генерации отчёта",
+            content = @Content(schema = @Schema(implementation = String.class)))
+      })
   public ResponseEntity<byte[]> generateExcelReport() throws IOException {
     List<Transaction> transactions = transactionRepository.findAllActive();
 

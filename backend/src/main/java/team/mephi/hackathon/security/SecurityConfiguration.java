@@ -27,26 +27,46 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
 
+/**
+ * Конфигурационный класс для настройки безопасности приложения. Настраивает: - OAuth2 Resource
+ * Server (JWT) - CORS - Авторизацию через роли
+ */
 @Configuration
 public class SecurityConfiguration {
+  /**
+   * URL-адрес, по которому доступны публичные ключи для проверки JWT токенов. Берётся из
+   * application.properties.
+   */
   @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
   String jwkSetUri;
 
+  /** Список разрешённых источников (origins) для CORS. Берётся из application.properties. */
   @Value("${app.http.cors.origins}")
   List<String> httpCorsOrigins;
 
+  /** Список разрешённых заголовков для CORS. Берётся из application.properties. */
   @Value("${app.http.cors.headers}")
   List<String> httpCorsHeaders;
 
+  /** Список разрешённых HTTP-методов для CORS. Берётся из application.properties. */
   @Value("${app.http.cors.methods}")
   List<String> httpCorsMethods;
 
+  /** Роль, которая требуется для доступа к API. Берётся из application.properties. */
   @Value("${app.role.users}")
   String userRole;
 
+  /** Включена ли аутентификация. Берётся из application.properties. */
   @Value("${app.auth.enabled}")
   boolean authEnabled;
 
+  /**
+   * Настраивает цепочку фильтров безопасности. Если аутентификация включена — защищает /api/** по
+   * ролям. Иначе — разрешает всё.
+   *
+   * @param http конфигурация HttpSecurity
+   * @return настроенная цепочка фильтров
+   */
   @Bean
   SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     if (authEnabled) {
@@ -74,11 +94,21 @@ public class SecurityConfiguration {
     return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
   }
 
+  /**
+   * Создаёт и настраивает декодер JWT для проверки токенов.
+   *
+   * @return реактивный декодер JWT
+   */
   @Bean
-  ReactiveJwtDecoder jwtDecoder() {
+  ReactiveJwtDecoder reactiveJwtDecoder() {
     return NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
   }
 
+  /**
+   * Настройка CORS: разрешённые источники, методы, заголовки.
+   *
+   * @return источник конфигурации CORS
+   */
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();

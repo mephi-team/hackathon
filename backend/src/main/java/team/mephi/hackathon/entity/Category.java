@@ -12,16 +12,22 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Сущность, представляющая категорию транзакции. Используется для классификации транзакций по типам
+ * операций.
+ */
 @Data
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "categories")
 public class Category {
+  /** Уникальный идентификатор категории. Генерируется автоматически при создании. */
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
+  /** Наименование категории. Должно быть обязательным. */
   @Column(nullable = false)
   @NonNull
   private String name;

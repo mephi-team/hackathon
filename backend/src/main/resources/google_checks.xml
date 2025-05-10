@@ -17,9 +17,9 @@
     </module>
 
     <module name="TreeWalker">
-<!--        <module name="JavadocMethod"/>-->
-<!--        <module name="JavadocType"/>-->
-<!--        <module name="JavadocVariable"/>-->
+        <module name="JavadocMethod"/>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable"/>
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>

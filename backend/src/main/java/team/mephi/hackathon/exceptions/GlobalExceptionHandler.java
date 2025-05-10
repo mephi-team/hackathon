@@ -12,20 +12,39 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 
+/**
+ * Глобальный обработчик исключений для REST API. Обрабатывает исключения на уровне приложения и
+ * возвращает клиенту понятные ошибки.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+  /** Логгер для записи информации об ошибках и событиях. */
   private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   public GlobalExceptionHandler() {
     LOGGER.info("GlobalExceptionHandler initialized"); // логирование инициализации
   }
 
+  /**
+   * Обрабатывает исключение {@link EntityNotFoundException}. Возвращает HTTP статус 404 (Not Found)
+   * и сообщение об ошибке.
+   *
+   * @param ex выброшенное исключение
+   * @return Mono с текстом ошибки
+   */
   @ExceptionHandler(EntityNotFoundException.class) // Используем WebFlux исключение
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public Mono<String> handleTransactionNotFoundException(EntityNotFoundException ex) {
     return Mono.just(ex.getMessage());
   }
 
+  /**
+   * Обрабатывает исключение валидации {@link WebExchangeBindException}. Возвращает HTTP статус 400
+   * (Bad Request) и карту полей с ошибками валидации.
+   *
+   * @param ex исключение, содержащее результаты валидации
+   * @return Mono с картой ошибок в формате {"поле": "сообщение"}
+   */
   @ExceptionHandler(WebExchangeBindException.class) // Используем WebFlux исключение
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Mono<Map<String, String>> handleWebExchangeBindException(WebExchangeBindException ex) {
@@ -45,6 +64,13 @@ public class GlobalExceptionHandler {
     return Mono.just(errors);
   }
 
+  /**
+   * Обрабатывает пользовательское исключение {@link ValidationException}. Возвращает HTTP статус
+   * 400 (Bad Request) и текст сообщения об ошибке.
+   *
+   * @param ex пользовательское исключение
+   * @return Mono с текстом ошибки
+   */
   @ExceptionHandler(ValidationException.class) // Используем WebFlux исключение
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Mono<String> handleValidationException(ValidationException ex) {
