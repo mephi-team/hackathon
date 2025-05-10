@@ -57,7 +57,7 @@ http://localhost:8000/swagger-ui/index.html
 
 1. Откройте [Postman](https://learning.postman.com/docs/collections/)
 2. Нажмите **Import**
-3. Выберите файл `Pasted_Text_1746884764745.txt`
+3. Выберите файл [Hackathon API.postman_collection.json](docs/Hackathon%20API.postman_collection.json)
 
 ### 🧩 Что включает:
 
