@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/mephi-team/hackathon/workflows/CI%20Pipeline/badge.svg)](https://github.com/mephi-team/hackathon/actions/workflows/maven-test.yml)
 
+Все схемы и документация расположены в папке docs.
+
 ## 1. Архитектура решения
 
 Проект представляет собой многослойное Spring Boot приложение, состоящее из следующих компонентов:
