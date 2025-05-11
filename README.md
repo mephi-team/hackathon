@@ -70,7 +70,7 @@ http://localhost:8000/swagger-ui/index.html
 
 - Для авторизации используется OAuth2:
 
-```bash
+```http
 POST http://localhost:8080/realms/hackathon-realm/protocol/openid-connect/token
 Body (x-www-form-urlencoded):
 client_id=hackathon-frontend
