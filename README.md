@@ -148,6 +148,8 @@ Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
 > Используются случайные порты и интеграция с реальной БД во время тестов.
 
+Отчет о тестирование лежит здесь [TestingReport.md](docs/TestingReport.md)
+Дополнительно приложен отчет allure о выполнении unit-тестов [allure-maven](docs/allure-maven)
 ---
 ## 6. Документация по развёртыванию
 
