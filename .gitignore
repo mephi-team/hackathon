@@ -2,3 +2,4 @@
 /keycloak-data/
 allure-results/
 .allure/
+*.drawio.bkp

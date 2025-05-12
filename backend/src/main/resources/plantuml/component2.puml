@@ -1,0 +1,33 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "Фронтенд" {
+  [TransactionForm] as TF
+  [TransactionsList] as TL
+  [FilterPanel] as FP
+  [ReportButtons] as RB
+  [DashboardView] as DV
+}
+
+package "Бэкенд" {
+  [TransactionService] as TS
+  [ReportService] as RS
+  [TransactionRepository] as TR
+  [CategoryService] as CS
+}
+
+package "База данных" {
+  [PostgreSQL - transactions]
+  [PostgreSQL - categories]
+}
+
+TF --> TS : отправляет транзакции
+TL --> TS : запрашивает список
+FP --> TS : фильтрует по условиям
+RB --> RS : генерирует отчеты
+DV --> RS : отображает статистику
+
+TS --> TR : чтение/запись транзакций
+RS --> TR : запрос данных для отчётов
+CS --> CategoryRepository : работа с категориями
+@enduml

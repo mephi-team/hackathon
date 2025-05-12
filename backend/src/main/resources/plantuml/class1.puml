@@ -1,0 +1,174 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+package "team.mephi.hackathon" {
+  package "dto" {
+    class TransactionRequestDto {
+      String personType
+      LocalDateTime operationDate
+      String transactionType
+      BigDecimal amount
+      String status
+      String senderBank
+      String account
+      String receiverBank
+      String receiverAccount
+      String receiverInn
+      String category
+      String receiverPhone
+    }
+
+    class TransactionResponseDto {
+      UUID id
+      String personType
+      LocalDateTime operationDate
+      String transactionType
+      BigDecimal amount
+      String status
+      String senderBank
+      String account
+      String receiverBank
+      String receiverAccount
+      String receiverInn
+      String category
+      String receiverPhone
+    }
+  }
+
+  package "entity" {
+    class Transaction {
+      UUID id
+      PersonType personType
+      LocalDateTime operationDate
+      String transactionType
+      BigDecimal amount
+      String status
+      String senderBank
+      String account
+      String receiverBank
+      String receiverAccount
+      String receiverInn
+      String category
+      String receiverPhone
+    }
+
+    class Category {
+      UUID id
+      String name
+    }
+  }
+
+  package "repository" {
+    interface TransactionRepository {
+      save()
+      findById()
+      findAll(Specification)
+    }
+
+    interface CategoryRepository {
+      save()
+      findByName()
+    }
+  }
+
+  package "service" {
+    class TransactionService {
+      create(dto)
+      update(id, dto)
+      getById(id)
+      search(filters)
+    }
+
+    class ValidationService {
+      validate(dto)
+      checkInnFormat()
+      checkPhoneFormat()
+    }
+
+    class ReportService {
+      generatePdfReport(transactions)
+      generateExcelReport(transactions)
+    }
+  }
+
+  package "controller" {
+    class TransactionController {
+      POST /api/transactions
+      GET /api/transactions
+      PUT /api/transactions/{id}
+      DELETE /api/transactions/{id}
+    }
+
+    class CategoryController {
+      POST /api/categories
+      GET /api/categories
+    }
+
+    class ReportController {
+      GET /api/reports/transactions/pdf
+      GET /api/reports/transactions/excel
+    }
+  }
+
+  package "exceptions" {
+    class GlobalExceptionHandler {
+      handleValidationException()
+      handleEntityNotFoundException()
+    }
+
+    class ValidationException
+    class EntityNotFoundException
+  }
+
+  package "specification" {
+    class TransactionSpecification {
+      hasSenderBank()
+      hasReceiverBank()
+      isOfType()
+      hasStatus()
+      dateBetween()
+      amountBetween()
+      hasCategory()
+    }
+  }
+
+  package "security" {
+    class SecurityConfig {
+      configure()
+      authorizeHttpRequests()
+      oauth2ResourceServer()
+    }
+
+    class JwtAuthenticationConverter {
+      convert()
+      extractAuthorities()
+    }
+  }
+
+  package "utils" {
+    class ModelMapperConfig {
+      map(TransactionDto → Transaction)
+    }
+  }
+
+  ' --- Relationships ---
+  TransactionController --> TransactionService : uses
+  TransactionService --> TransactionRepository : uses
+  TransactionService --> ValidationService : uses
+  TransactionService --> ModelMapperConfig : uses
+
+  TransactionController --> GlobalExceptionHandler : exceptions
+
+  ModelMapperConfig --> TransactionRequestDto
+  ModelMapperConfig --> Transaction
+  ModelMapperConfig --> TransactionResponseDto
+
+  TransactionController .> JwtAuthenticationConverter : auth
+
+  Transaction <|-- JPAEntitySupport
+  Category <|-- JPAEntitySupport
+
+  TransactionRequestDto --> ValidationService : validated
+  TransactionService --> TransactionSpecification : filters
+
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+class TransactionSpecification {
+  +hasSenderBank(String): Specification
+  +hasReceiverBank(String): Specification
+  +isOfType(String): Specification
+  +hasStatus(String): Specification
+  +dateBetween(LocalDateTime, LocalDateTime): Specification
+  +amountBetween(BigDecimal, BigDecimal): Specification
+  +hasCategory(String): Specification
+}
+
+class TransactionService {
+  +searchTransactions(TransactionFilter): List<Transaction>
+}
+
+TransactionService --> TransactionRepository : использует Specification
+TransactionRepository --> TransactionSpecification : принимает фильтр
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+start
+
+:Получить TransactionRequestDto;
+if (personType == null or empty?) then (да)
+  :Выбросить ValidationException;
+else if (amount == null?) then (да)
+  :Выбросить ValidationException;
+else if (receiverInn не соответствует формату?) then (да)
+  :Выбросить ValidationException;
+else if (receiverPhone не соответствует маске?) then (да)
+  :Выбросить ValidationException;
+else
+  :Продолжить выполнение;
+endif
+
+stop
+@enduml

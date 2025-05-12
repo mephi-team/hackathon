@@ -2,9 +2,14 @@
 
 [![CI](https://github.com/mephi-team/hackathon/workflows/CI%20Pipeline/badge.svg)](https://github.com/mephi-team/hackathon/actions/workflows/maven-test.yml)
 
-Все схемы и документация расположены в папке docs.
+## 1. Диаграммы и архитектура
 
-## 1. Архитектура решения
+Все диаграммы из презентации располагаются в файле [hakathon_architecture.drawio](docs/hakathon_architecture.drawio),
+который можно импортировать в [draw.io (diagrams.net)](https://www.diagrams.net/ ) для редактирования.
+
+Дополнительные UML диаграммы собраны в отдельном файле [UML.md](docs/plantuml/UML.md)
+
+### 1.1 Архитектура решения
 
 Проект представляет собой многослойное Spring Boot приложение, состоящее из следующих компонентов:
 

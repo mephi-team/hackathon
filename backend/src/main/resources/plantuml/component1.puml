@@ -1,0 +1,64 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "team.mephi.hackathon" {
+  [TransactionController] as TC
+  [CategoryController] as CC
+  [ReportController] as RC
+
+  [TransactionService] as TS
+  [CategoryService] as CS
+  [ReportService] as RS
+  [ValidationService] as VS
+
+  [TransactionRepository] as TR
+  [CategoryRepository] as CR
+
+  [GlobalExceptionHandler] as EH
+  [JwtAuthenticationConverter] as JC
+  [SecurityConfig] as SC
+
+  [ModelMapperConfig] as MM
+}
+
+TC --> TS
+CC --> CS
+RC --> RS
+
+TS --> TR
+TS --> VS
+TS --> MM
+
+CS --> CR
+
+VS ..> TransactionRequestDto
+
+JC --> SC
+
+EH -up-> TC
+EH -up-> CC
+EH -up-> RC
+
+MM --> TransactionRequestDto
+MM --> Transaction
+MM --> TransactionResponseDto
+
+SC --> TC
+SC --> CC
+SC --> RC
+
+note right of TS
+  Бизнес-логика создания,
+  обновления и фильтрации
+end note
+
+note right of TR
+  JPA репозиторий.
+  Работает с таблицей transactions
+end note
+
+note right of RC
+  Генерация PDF/Excel отчётов
+end note
+
+@enduml

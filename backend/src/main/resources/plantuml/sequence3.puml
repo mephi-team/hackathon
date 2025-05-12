@@ -1,0 +1,28 @@
+@startuml
+participant "Пользователь" as User
+participant "ReportController" as RC
+participant "ReportService" as RS
+participant "TransactionRepository" as TR
+participant "Database" as DB
+
+User -> RC: GET /api/reports/transactions/pdf
+activate RC
+
+RC -> RS: generatePdfReport()
+activate RS
+
+RS -> TR: findAllActive()
+activate TR
+TR -> DB: SELECT * FROM transactions WHERE status != 'DELETED'
+deactivate TR
+
+RS -> PDBox: Создать PDF документ
+activate PDBox
+PDBox --> RS: готовый PDF
+deactivate PDBox
+
+RS --> RC: byte[]
+deactivate RS
+
+RC --> User: Отправить файл
+@enduml

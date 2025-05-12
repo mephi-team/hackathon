@@ -1,0 +1,23 @@
+@startuml
+actor "Пользователь" as User
+User -> AuthController : Открывает /login
+activate AuthController
+
+AuthController -> Keycloak : POST /token
+activate Keycloak
+Keycloak --> AuthController : Возвращает JWT токен
+deactivate Keycloak
+
+AuthController --> User : Токен сохраняется (localStorage)
+User -> Frontend : Перезапускает запрос с заголовком Authorization: Bearer <token>
+Frontend -> Backend : GET /api/transactions
+activate Backend
+
+Backend -> JwtAuthenticationConverter : Проверяет токен
+activate JwtAuthenticationConverter
+JwtAuthenticationConverter --> Backend : Извлекает роль пользователя
+deactivate JwtAuthenticationConverter
+
+Backend --> Frontend : Возвращает данные
+deactivate Backend
+@enduml

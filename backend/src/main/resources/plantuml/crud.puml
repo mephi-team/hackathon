@@ -1,0 +1,54 @@
+@startuml
+title CRUD for Category
+
+User -> CategoryController : POST /api/categories {name}
+activate CategoryController
+CategoryController -> CategoryService : create(dto)
+activate CategoryService
+CategoryService -> CategoryRepository : save(entity)
+activate CategoryRepository
+CategoryRepository --> CategoryService : сохранённая сущность
+deactivate CategoryRepository
+CategoryService --> CategoryController : ResponseDto
+deactivate CategoryService
+CategoryController --> User : 201 Created
+
+User -> CategoryController : GET /api/categories
+activate CategoryController
+CategoryController -> CategoryService : getAll()
+activate CategoryService
+CategoryService -> CategoryRepository : findAll()
+activate CategoryRepository
+CategoryRepository --> CategoryService : список категорий
+deactivate CategoryRepository
+CategoryService --> CategoryController : преобразованный список
+deactivate CategoryService
+CategoryController --> User : JSON массив
+
+User -> CategoryController : PUT /api/categories/{id}
+activate CategoryController
+CategoryController -> CategoryService : update(id, dto)
+activate CategoryService
+CategoryService -> CategoryRepository : findById()
+activate CategoryRepository
+CategoryRepository --> CategoryService : найденная категория
+deactivate CategoryRepository
+
+CategoryService -> CategoryRepository : save(обновленная категория)
+CategoryRepository --> CategoryService : обновленная категория
+deactivate CategoryService
+CategoryController --> User : 200 OK
+
+User -> CategoryController : DELETE /api/categories/{id}
+CategoryController -> CategoryService : delete(id)
+activate CategoryService
+CategoryService -> CategoryRepository : findById()
+activate CategoryRepository
+CategoryRepository --> CategoryService : найденная категория
+deactivate CategoryRepository
+
+CategoryService -> CategoryRepository : deleteById(id)
+CategoryRepository --> CategoryService : OK
+deactivate CategoryService
+CategoryController --> User : 204 No Content
+@enduml

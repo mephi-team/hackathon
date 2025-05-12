@@ -1,0 +1,65 @@
+@startuml
+class Transaction {
+  id: UUID
+  personType: String
+  operationDate: LocalDateTime
+  transactionType: String
+  amount: BigDecimal
+  status: String
+  senderBank: String
+  receiverBank: String
+  receiverInn: String
+  category: String
+  receiverPhone: String
+}
+
+class Category {
+  id: UUID
+  name: String
+}
+
+class TransactionRequestDto {
+  personType: String
+  operationDate: LocalDateTime
+  transactionType: String
+  amount: BigDecimal
+  status: String
+  senderBank: String
+  account: String
+  receiverBank: String
+  receiverAccount: String
+  receiverInn: String
+  category: String
+  receiverPhone: String
+}
+
+class TransactionResponseDto {
+  id: UUID
+  personType: String
+  operationDate: LocalDateTime
+  transactionType: String
+  amount: BigDecimal
+  status: String
+  senderBank: String
+  receiverBank: String
+  receiverInn: String
+  category: String
+  receiverPhone: String
+}
+
+class CategoryRequestDto {
+  name: String
+}
+
+class CategoryResponseDto {
+  id: UUID
+  name: String
+}
+
+Transaction "1" -- "0..*" TransactionRequestDto : maps to
+Transaction "1" -- "0..*" TransactionResponseDto : maps to
+Category "1" -- "0..*" CategoryRequestDto : maps to
+Category "1" -- "0..*" CategoryResponseDto : maps to
+
+Transaction --> Category : belongs to
+@enduml

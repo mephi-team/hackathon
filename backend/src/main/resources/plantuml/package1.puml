@@ -1,0 +1,60 @@
+@startuml
+skinparam packageStyle rectangle
+
+package "team.mephi.hackathon" {
+  package "dto"
+  package "entity"
+  package "repository"
+  package "service"
+  package "controller"
+  package "exceptions"
+  package "specification"
+  package "security"
+  package "utils"
+}
+
+dto --> entity
+entity --> repository
+repository --> service
+service --> controller
+controller --> exceptions
+controller --> security
+utils --> service
+specification --> service
+
+note right of dto
+  Data Transfer Objects
+end note
+
+note right of entity
+  ORM-сущности
+end note
+
+note right of repository
+  Доступ к данным через JPA
+end note
+
+note right of service
+  Бизнес-логика
+end note
+
+note right of controller
+  REST API
+end note
+
+note right of exceptions
+  Централизованная обработка ошибок
+end note
+
+note right of specification
+  Фильтрация по условиям
+end note
+
+note right of security
+  Авторизация через OAuth2
+end note
+
+note right of utils
+  Маппинг DTO ↔ Entity
+end note
+@enduml

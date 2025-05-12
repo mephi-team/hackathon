@@ -1,0 +1,27 @@
+@startuml
+participant "Пользователь" as User
+participant "Frontend" as FE
+participant "TransactionController" as TC
+participant "ValidationService" as VS
+participant "TransactionService" as TS
+participant "TransactionRepository" as TR
+participant "Database" as DB
+
+User -> FE: Заполняет форму
+FE -> TC: POST /api/transactions {dto}
+activate TC
+
+TC -> VS: validate(dto)
+activate VS
+VS -->> TC: OK
+
+TC -> TS: create(dto)
+activate TS
+TS -> TR: save(entity)
+activate TR
+TR -> DB: INSERT INTO transactions
+deactivate TR
+
+TS -->> TC: createdDto
+TC -->> FE: 201 Created
+@enduml

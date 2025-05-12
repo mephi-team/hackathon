@@ -143,6 +143,33 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.jeluard</groupId>
+                <artifactId>plantuml-maven-plugin</artifactId>
+                <version>1.2</version>
+                <configuration>
+                    <!-- Директория с исходными .puml файлами (если есть) -->
+                    <sourceFiles>
+                        <directory>${project.basedir}/src/main/resources/plantuml</directory>
+                        <includes>
+                            <include>**/*.puml</include>
+                        </includes>
+                    </sourceFiles>
+                    <!-- Выходная директория для сгенерированных изображений -->
+                    <outputDirectory>${project.basedir}/../docs/plantuml</outputDirectory>
+                    <!-- Формат изображений (svg, png, pdf и др.) -->
+                    <format>svg</format>
+                    <graphvizDot>/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot</graphvizDot>
+                </configuration>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>generate-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>generate</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+            </plugin>
+            <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>2.14.0</version>

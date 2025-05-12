@@ -1,0 +1,29 @@
+@startuml
+start
+:Пользователь применяет фильтры;
+if (senderBank != null) then (да)
+  :Добавить условие по банку отправителя;
+endif
+
+if (receiverBank != null) then (да)
+  :Добавить условие по банку получателя;
+endif
+
+if (amountMin != null) then (да)
+  :Добавить фильтр по минимальной сумме;
+endif
+
+if (category != null) then (да)
+  :Добавить фильтр по категории;
+endif
+
+if (dateFrom != null or dateTo != null) then (да)
+  :Добавить фильтр по диапазону дат;
+endif
+
+:Отправить запрос на бэкенд;
+:Получить отфильтрованный список;
+:Отобразить результат на странице;
+
+stop
+@enduml

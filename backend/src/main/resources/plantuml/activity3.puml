@@ -1,0 +1,18 @@
+@startuml
+title GlobalExceptionHandler Flow
+
+start
+:Получено исключение;
+if (ValidationException?) then (да)
+  :Возвращаем 400 Bad Request\nс сообщением об ошибке;
+else if (EntityNotFoundException?) then (да)
+  :Возвращаем 404 Not Found;
+else if (WebExchangeBindException?) then (да)
+  :Собираем все ошибки валидации;
+  :Возвращаем 400 Bad Request с деталями;
+else
+  :Возвращаем 500 Internal Server Error;
+endif
+
+stop
+@enduml

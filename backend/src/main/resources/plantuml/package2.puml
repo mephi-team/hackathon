@@ -1,0 +1,22 @@
+@startuml
+package "team.mephi.hackathon" {
+  package "dto"
+  package "entity"
+  package "repository"
+  package "service"
+  package "controller"
+  package "exceptions"
+  package "security"
+  package "utils"
+  package "specification"
+}
+
+dto --> entity
+entity --> repository
+repository --> service
+service --> controller
+controller --> exceptions
+controller --> security
+utils --> service
+specification --> service
+@enduml
