@@ -176,7 +176,7 @@
                 <configuration>
                     <singleFile>true</singleFile>
                     <resultsDirectory>${project.basedir}/allure-results</resultsDirectory>
-                    <reportDirectory>${project.build.directory}/site/allure-maven</reportDirectory>
+                    <reportDirectory>${project.basedir}/../docs/allure-maven</reportDirectory>
                 </configuration>
             </plugin>
             <plugin>
