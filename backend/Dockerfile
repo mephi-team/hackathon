@@ -9,4 +9,4 @@ RUN addgroup --system javauser && adduser -S -s /usr/sbin/nologin -G javauser ja
 COPY --from=builder /build/target/backend-1.0-SNAPSHOT.jar app.jar
 RUN chown -R javauser:javauser .
 USER javauser
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED", "--enable-native-access=ALL-UNNAMED", "-Dio.netty.noUnsafe=true", "-jar", "app.jar"]
